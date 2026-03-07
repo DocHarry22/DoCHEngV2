@@ -66,6 +66,13 @@ CI runs on pull requests and pushes to `main` and `master`:
 
 See `.github/workflows/ci.yml`.
 
+Operational governance docs:
+
+- `docs/GITHUB_BOOTSTRAP.md`
+- `docs/GITHUB_REPO_SETTINGS_CHECKLIST.md`
+- `CONTRIBUTING.md`
+- `SECURITY.md`
+
 ## Subdomain App Expansion Plan
 
 Future subdomain applications should live under `apps/` using a dedicated folder per app.
@@ -96,3 +103,5 @@ Routes and protection:
 ## Next Operational Step
 
 If this folder has not been published yet, use the bootstrap guide in `docs/GITHUB_BOOTSTRAP.md` to initialize and push this repository to GitHub.
+
+After publishing, apply branch protections and security defaults using `docs/GITHUB_REPO_SETTINGS_CHECKLIST.md`.

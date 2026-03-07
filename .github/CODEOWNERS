@@ -1,0 +1,11 @@
+# Default ownership for the entire repository.
+# Replace with real GitHub handles before enabling required reviews.
+
+* @docheng/core-platform
+
+# Suggested future ownership split as apps are added.
+# /apps/desk-web/ @docheng/desk
+# /apps/chatpdf-web/ @docheng/chatpdf
+# /apps/resume-web/ @docheng/resume
+# /src/lib/auth/ @docheng/security
+# /.github/ @docheng/core-platform
