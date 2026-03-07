@@ -110,7 +110,7 @@ export function Navbar() {
   };
 
   return (
-    <header ref={navRef} className="sticky top-0 z-50 border-b border-[var(--border-subtle)] bg-[var(--surface-0)]/80 backdrop-blur-xl">
+    <header ref={navRef} className="sticky top-0 z-50 border-b border-[var(--border-subtle)] bg-[var(--surface-1)]">
       <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
         <BrandLockup />
 
@@ -158,7 +158,7 @@ export function Navbar() {
                 role="menu"
                 aria-label={`${group.label} navigation`}
                 className={cn(
-                  "absolute left-0 top-[calc(100%+0.4rem)] z-[70] w-[min(38rem,calc(100vw-3rem))] rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-0)] p-3 shadow-[var(--shadow-soft)] transition duration-150",
+                  "absolute left-0 top-[calc(100%+0.4rem)] z-[70] w-[min(38rem,calc(100vw-3rem))] rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-1)] p-3 shadow-[var(--shadow-soft)] transition duration-150",
                   openDesktopGroup === group.key ? "visible translate-y-0 opacity-100 pointer-events-auto" : "invisible -translate-y-1 opacity-0 pointer-events-none"
                 )}
               >
@@ -273,7 +273,7 @@ export function Navbar() {
           </Link>
 
           {safeGroups.map((group) => (
-            <div key={group.key} className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-0)]">
+            <div key={group.key} className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-1)]">
               <button
                 type="button"
                 className={cn(
@@ -295,7 +295,7 @@ export function Navbar() {
                 <div className="overflow-hidden">
                   <div className="space-y-2 px-2 pb-2">
                     {group.sections.map((section) => (
-                      <div key={section.heading} className="rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-1)] p-2">
+                      <div key={section.heading} className="rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-2)] p-2">
                         <p className="px-1 text-[10px] font-semibold uppercase tracking-[0.11em] text-[var(--text-muted)]">{section.heading}</p>
                         <div className="mt-1 space-y-0.5">
                           {section.links.map((item) => (

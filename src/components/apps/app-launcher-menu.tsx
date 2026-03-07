@@ -43,7 +43,7 @@ export function AppLauncherMenu({ mobile = false, className }: AppLauncherMenuPr
 
   if (mobile) {
     return (
-      <div className={cn("rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-0)]", className)}>
+      <div className={cn("rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-1)]", className)}>
         <button
           type="button"
           className="flex w-full items-center justify-between rounded-xl px-3 py-2 text-sm font-semibold uppercase tracking-[0.1em] text-[var(--text-main)]"
@@ -101,7 +101,7 @@ export function AppLauncherMenu({ mobile = false, className }: AppLauncherMenuPr
       <div
         id="desktop-app-launcher"
         className={cn(
-          "absolute right-0 top-[calc(100%+0.4rem)] z-[70] w-[22rem] rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-0)] p-2.5 shadow-[var(--shadow-soft)] transition duration-150",
+          "absolute right-0 top-[calc(100%+0.4rem)] z-[70] w-[22rem] rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-1)] p-2.5 shadow-[var(--shadow-soft)] transition duration-150",
           open ? "visible translate-y-0 opacity-100 pointer-events-auto" : "invisible -translate-y-1 opacity-0 pointer-events-none"
         )}
       >

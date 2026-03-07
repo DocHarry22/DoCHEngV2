@@ -83,7 +83,7 @@ export function BackgroundThemeSelector({ className, compact = false }: { classN
         role="dialog"
         aria-label="Background theme selector"
         className={cn(
-          "absolute right-0 top-[calc(100%+0.5rem)] z-[60] w-[min(24rem,calc(100vw-2rem))] rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-0)] p-3 shadow-[var(--shadow-soft)] transition duration-150",
+          "absolute right-0 top-[calc(100%+0.5rem)] z-[60] w-[min(24rem,calc(100vw-2rem))] rounded-2xl border border-[var(--border-subtle)] bg-[var(--surface-1)] p-3 shadow-[var(--shadow-soft)] transition duration-150",
           open ? "visible translate-y-0 opacity-100" : "invisible -translate-y-1 opacity-0 pointer-events-none"
         )}
       >
