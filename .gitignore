@@ -1,0 +1,44 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+
+# testing
+/coverage
+
+# next.js
+/.next
+/out
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# local env files
+.env*.local
+.env
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# future multi-app layout
+apps/**/node_modules
+apps/**/.next
+apps/**/out
+apps/**/dist
+apps/**/coverage
+apps/**/.turbo
+
+# editor/OS artifacts
+.vscode/
+Thumbs.db
