@@ -62,7 +62,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${sans.variable} ${mono.variable} min-h-screen bg-[var(--bg-canvas)] font-sans text-[var(--text-main)] antialiased`}>
+      <body
+        suppressHydrationWarning
+        className={`${sans.variable} ${mono.variable} min-h-screen bg-[var(--bg-canvas)] font-sans text-[var(--text-main)] antialiased`}
+      >
         <Providers>
           <div className="relative flex min-h-screen flex-col">
             <Navbar />

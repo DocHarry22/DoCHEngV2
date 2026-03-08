@@ -7,7 +7,7 @@ import {
   backgroundThemePresets,
   backgroundThemeStorageKey,
   defaultBackgroundThemeId,
-  getBackgroundThemePreset,
+  getBackgroundThemeVariables,
   isBackgroundThemeId,
   type BackgroundMode,
   type BackgroundThemeId
@@ -30,8 +30,11 @@ function collectManagedVariables() {
   const vars = new Set<string>();
 
   for (const preset of backgroundThemePresets) {
-    Object.keys(preset.vars.light).forEach((key) => vars.add(key));
-    Object.keys(preset.vars.dark).forEach((key) => vars.add(key));
+    const lightVars = preset?.variants?.light?.vars ?? {};
+    const darkVars = preset?.variants?.dark?.vars ?? {};
+
+    Object.keys(lightVars).forEach((key) => vars.add(key));
+    Object.keys(darkVars).forEach((key) => vars.add(key));
   }
 
   return Array.from(vars) as Array<`--${string}`>;
@@ -54,8 +57,8 @@ function readStoredBackgroundTheme(): BackgroundThemeId {
 
 function applyThemeVariables(themeId: BackgroundThemeId, mode: BackgroundMode) {
   const root = document.documentElement;
-  const preset = getBackgroundThemePreset(themeId);
-  const nextVars = preset.vars[mode];
+  const nextVars = getBackgroundThemeVariables(themeId, mode);
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   root.setAttribute("data-background-theme", themeId);
 
@@ -67,6 +70,20 @@ function applyThemeVariables(themeId: BackgroundThemeId, mode: BackgroundMode) {
       root.style.removeProperty(varName);
     }
   });
+
+  if (reducedMotion) {
+    root.style.setProperty("--bg-anim-play-state", "paused");
+    root.style.setProperty("--bg-anim-global-1-duration", "0s");
+    root.style.setProperty("--bg-anim-global-2-duration", "0s");
+    root.style.setProperty("--bg-anim-global-orbit-duration", "0s");
+    root.style.setProperty("--bg-anim-hero-1-duration", "0s");
+    root.style.setProperty("--bg-anim-hero-2-duration", "0s");
+    root.style.setProperty("--bg-anim-hero-orbit-duration", "0s");
+    root.style.setProperty("--bg-anim-ecosystem-1-duration", "0s");
+    root.style.setProperty("--bg-anim-ecosystem-2-duration", "0s");
+    root.style.setProperty("--bg-anim-ecosystem-orbit-duration", "0s");
+    root.style.setProperty("--bg-anim-twinkle-duration", "0s");
+  }
 }
 
 export function BackgroundThemeProvider({ children }: { children: React.ReactNode }) {

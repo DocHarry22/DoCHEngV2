@@ -14,6 +14,7 @@
   --bg-global-geometry-opacity: 0.46;
   --bg-hero-ambient-opacity: 0.86;
   --bg-hero-geometry-opacity: 0.78;
+  --bg-page-ambient-opacity: 0.42;
 
   --bg-global-layer-1:
     radial-gradient(58% 46% at 12% 8%, var(--bg-celestial-halo), transparent 72%),
@@ -127,6 +128,7 @@
   --bg-global-geometry-opacity: 0.6;
   --bg-hero-ambient-opacity: 0.92;
   --bg-hero-geometry-opacity: 0.86;
+  --bg-page-ambient-opacity: 0.48;
 
   --surface-0: rgba(7, 15, 26, 0.74);
   --surface-1: #101c2d;
@@ -281,7 +283,7 @@ a {
   pointer-events: none;
   z-index: 0;
   background: var(--bg-page-layer);
-  opacity: 0.42;
+  opacity: var(--bg-page-ambient-opacity);
 }
 
 .page-ambient > * {
@@ -582,12 +584,20 @@ a {
     inset: -10rem;
   }
 
+  body::before {
+    opacity: calc(var(--bg-global-ambient-opacity) * 0.72);
+  }
+
+  body::after {
+    opacity: calc(var(--bg-global-geometry-opacity) * 0.68);
+  }
+
   .ecosystem-hero::before,
   .ecosystem-hero::after {
     inset: -3rem;
   }
 
   .page-ambient::before {
-    opacity: 0.28;
+    opacity: calc(var(--bg-page-ambient-opacity) * 0.72);
   }
 }

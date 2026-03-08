@@ -15,7 +15,8 @@ import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { BackgroundThemeSelector } from "@/components/theme/background-selector";
 
 export function Navbar() {
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "";
+  const currentPath = pathname ?? "/";
   const { session } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [openDesktopGroup, setOpenDesktopGroup] = useState<string | null>(null);
@@ -82,13 +83,13 @@ export function Navbar() {
 
     if (!hashPart) {
       if (href === "/") {
-        return pathname === "/";
+        return currentPath === "/";
       }
-      return pathname === href || pathname.startsWith(`${href}/`);
+      return currentPath === href || currentPath.startsWith(`${href}/`);
     }
 
     const normalizedPath = pathPart || "/";
-    if (pathname !== normalizedPath) {
+    if (currentPath !== normalizedPath) {
       return false;
     }
 
