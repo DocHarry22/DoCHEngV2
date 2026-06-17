@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import type { ReactNode } from "react";
 
 import { Footer } from "@/components/layout/footer";
@@ -8,21 +7,10 @@ import { Providers } from "@/app/providers";
 
 import "./globals.css";
 
-const sans = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  variable: "--font-sans",
-  display: "swap"
-});
-
-const mono = IBM_Plex_Mono({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  variable: "--font-mono",
-  display: "swap"
-});
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://dochengv2.example";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://dochengv2.example"),
+  metadataBase: new URL(siteUrl),
   icons: {
     icon: [
       { url: "/nav-logo-symbol-whitebackground.png", type: "image/png", media: "(prefers-color-scheme: light)" },
@@ -64,7 +52,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
     <html lang="en" suppressHydrationWarning>
       <body
         suppressHydrationWarning
-        className={`${sans.variable} ${mono.variable} min-h-screen bg-[var(--bg-canvas)] font-sans text-[var(--text-main)] antialiased`}
+        className="min-h-screen bg-[var(--bg-canvas)] font-sans text-[var(--text-main)] antialiased"
       >
         <Providers>
           <div className="relative flex min-h-screen flex-col">
