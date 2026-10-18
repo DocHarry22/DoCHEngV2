@@ -22,7 +22,8 @@ import {
 } from "@/lib/support-content";
 
 export const metadata: Metadata = {
-  title: "Support | DoCHEngV2",
+  title: "Support",
+  alternates: { canonical: "/support" },
   description:
     "Support and contact center for DoCHEng product guidance, technical help, pricing and access questions, and business enquiries."
 };

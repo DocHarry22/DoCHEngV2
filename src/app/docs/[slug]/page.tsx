@@ -25,12 +25,13 @@ export async function generateMetadata({ params }: DocPageProps): Promise<Metada
 
   if (!article) {
     return {
-      title: "Documentation Article Not Found | DoCHEngV2"
+      title: "Documentation Article Not Found"
     };
   }
 
   return {
-    title: `${article.title} | Documentation | DoCHEngV2`,
+    title: `${article.title} | Documentation`,
+    alternates: { canonical: `/docs/${article.slug}` },
     description: article.summary
   };
 }

@@ -17,7 +17,8 @@ import {
 import { pricingModels } from "@/lib/site-content";
 
 export const metadata: Metadata = {
-  title: "Pricing | DoCHEngV2",
+  title: "Pricing",
+  alternates: { canonical: "/pricing" },
   description:
     "Explore product-specific pricing models, platform access, and plan structures across the DoCHEng ecosystem.",
 };

@@ -33,3 +33,12 @@ The original OneDrive checkout is preserved. Work uses a separate clone of the c
 The owner requested an included free mailbox only. The connector can manage an existing mail order but does not expose a free-plan claim operation. hPanel activation is pending; no email plan was purchased and no auto-renewal was enabled. Until a verified sender is configured, ticket persistence works and email status remains queued.
 
 Implementation commits: `c558065` (platform upgrade), `1fd6abe` (contrast and browser corrections), `3ba9198` (mobile theme interaction). The hosting Git installation is active and automatic deployment is enabled for the canonical repository's `main` branch. Observe that deployment after merge before issuing a separate build request.
+
+## Production acceptance
+
+- Hydration correction `718f7ad88cb128db9d8247bfbc62e5fb8b5a3518` passes all gates in CI run https://github.com/DocHarry22/DoCHEngV2/actions/runs/39176374512, including all 71 unit/security and all 18 browser checks.
+- PR #3 merged as `9ba47909048dbc983cff17e29410d53068774905`. Hostinger automatically built that exact revision in build `01a15158-8f3a-7203-83d1-4e9b0fc6a0a0`, completed 18 October 2026 at 23:29:50 UTC.
+- Live checks pass for all 44 public routes checked, sitemap, robots, Open Graph, canonical HTTPS/www redirects, security headers, disabled billing and protected APIs. The existing uploaded Desk and Resume entries still respond.
+- A labelled production QA account completed signup, signout and real password login. Its ticket `DCH-2026-FF285E31B280` persists; ordinary-user administrator access is denied. Browser checks pass for live filters, pump-power reference output and mobile navigation, with no recorded runtime errors.
+- A small follow-up corrects duplicated legacy page titles, adds canonical metadata, and connects the old Methods/Publishing/Research/Labs placeholders to current tools, documentation and clearly marked planned products. Persistence across its deployment is checked separately in operator release evidence.
+- Email remains queued-only because no included DoCHEng mail plan has been activated. No email product was purchased. Live billing remains disabled, and the explicitly designated owner must verify their mailbox before administrator assignment.
