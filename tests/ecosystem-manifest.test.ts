@@ -1,65 +1,60 @@
 import {
-  getAllApps,
-  getAppBySlug,
-  getAppPrimaryAction,
-  getAppsByAccessType,
-  getAppsByStatus,
-  getAppsForDownloads,
-  getAppsForLauncher,
-  getAppsForPricing,
-  getFeaturedApps,
   getPublicApps,
-  validateEcosystemManifest
+  getAppBySlug,
+  getAppsForLauncher,
+  getAppPrimaryAction,
+  validateEcosystemManifest,
 } from "@/lib/ecosystem-manifest";
-
-describe("ecosystem manifest", () => {
-  it("exposes canonical app list and featured/public selectors", () => {
-    const all = getAllApps();
-    const featured = getFeaturedApps();
-    const publicApps = getPublicApps();
-
-    expect(all.length).toBeGreaterThan(0);
-    expect(featured.length).toBeGreaterThan(0);
-    expect(publicApps.every((app) => app.visibility === "public")).toBe(true);
+import { baseCatalogue, productAction } from "@/lib/catalogue";
+import { distributionBuilds } from "@/lib/distribution-content";
+describe("verified registry policy", () => {
+  it("uses unique published identifiers and complete metadata", () => {
+    expect(validateEcosystemManifest().valid).toBe(true);
+    expect(new Set(baseCatalogue.map((p) => p.slug)).size).toBe(
+      baseCatalogue.length,
+    );
+    for (const p of baseCatalogue) {
+      expect(p.description.length).toBeGreaterThan(40);
+      expect(p.features.length).toBeGreaterThan(0);
+      expect(p.platforms).toContain("Web");
+      expect(p.pricing).toBe("unconfirmed");
+    }
   });
-
-  it("returns expected app by slug", () => {
-    const desk = getAppBySlug("desk");
-
-    expect(desk).toBeDefined();
-    expect(desk?.name).toMatch(/docheng desk/i);
+  it("never publishes internal entries or private workspace records", () => {
+    expect(
+      getPublicApps().every(
+        (p) => p.visibility === "public" && p.status !== "internal",
+      ),
+    ).toBe(true);
+    expect(getAppBySlug("labs-runtime")).toBeUndefined();
+    expect(getAppBySlug("research-core")).toBeUndefined();
+    expect(
+      getAppsForLauncher().every((p) => p.parentRole !== "parent-platform"),
+    ).toBe(true);
   });
-
-  it("supports status and access selectors", () => {
-    const liveApps = getAppsByStatus("live");
-    const desktopApps = getAppsByAccessType("desktop");
-
-    expect(liveApps.some((app) => app.slug === "desk")).toBe(true);
-    expect(desktopApps.length).toBeGreaterThan(0);
+  it("launches only exact verified URLs and maps upcoming CTAs safely", () => {
+    const desk = getAppBySlug("desk")!;
+    expect(getAppPrimaryAction(desk).href).toBe(desk.verifiedWeb?.url);
+    expect(
+      getAppPrimaryAction({ ...desk, verifiedWeb: undefined }).external,
+    ).not.toBe(true);
+    const compass = baseCatalogue.find((p) => p.slug === "compass")!;
+    expect(productAction(compass).external).toBe(false);
+    expect(productAction(compass).label).toBe("Join Waitlist");
+    expect(productAction({ ...compass, status: "planned" }).label).toBe(
+      "View Roadmap",
+    );
   });
-
-  it("builds launcher/download/pricing selector sets", () => {
-    const launcher = getAppsForLauncher();
-    const downloads = getAppsForDownloads();
-    const pricing = getAppsForPricing();
-
-    expect(launcher.every((app) => app.parentRole !== "parent-platform")).toBe(true);
-    expect(downloads.some((app) => app.slug === "desk")).toBe(true);
-    expect(pricing.some((app) => app.slug === "resume")).toBe(true);
-  });
-
-  it("resolves status-safe primary actions", () => {
-    const liveAction = getAppPrimaryAction(getAppBySlug("desk")!);
-    const plannedAction = getAppPrimaryAction(getAppBySlug("research-core")!);
-
-    expect(liveAction.label).toMatch(/open/i);
-    expect(plannedAction.label).toMatch(/waitlist/i);
-  });
-
-  it("validates manifest shape with no errors", () => {
-    const result = validateEcosystemManifest();
-
-    expect(result.valid).toBe(true);
-    expect(result.errors).toHaveLength(0);
+  it("does not advertise nonexistent installers", () => {
+    expect(distributionBuilds).toEqual([]);
+    expect(
+      baseCatalogue
+        .filter((p) => p.category !== "Sister Projects")
+        .every((p) => p.releases.length === 0),
+    ).toBe(true);
+    const release = baseCatalogue.find((p) => p.slug === "apologia-sancta")!
+      .releases[0];
+    expect(release.channel).toBe("preview");
+    expect(release.sha256).toMatch(/^[a-f0-9]{64}$/);
   });
 });

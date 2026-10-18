@@ -1,8 +1,8 @@
-# DoCHEngV2
+# DoCHEng
 
 DoCHEngV2 is the parent GitHub repository for the DoCHEng web platform.
 
-It currently contains the main web experience and shared platform code, and it is structured to scale into a multi-app subdomain architecture over time (for example: `desk.docheng.com`, `chatpdf.docheng.com`, `resume.docheng.com`).
+This is the existing parent platform at https://www.docheng.co.za/. It provides verified product discovery, customer accounts, private support tickets, release distribution, engineering tools and protected administration. Independent applications retain their own identity and data permissions.
 
 ## Repository Goals
 
@@ -18,6 +18,8 @@ It currently contains the main web experience and shared platform code, and it i
 - Tailwind CSS v4
 - Vitest + Testing Library
 - `next-themes` for theming
+- Node.js 22.13+ and a private single-instance SQLite store
+- Playwright and axe-core for browser and accessibility checks
 
 ## Current Structure
 
@@ -38,7 +40,7 @@ DoCHEngV2/
   next.config.ts
   package.json
   tsconfig.json
-  vitest.config.ts
+  vitest.config.mts
 ```
 
 ## Local Development
@@ -88,9 +90,11 @@ Shared logic should remain in this parent repository (or be extracted into share
 
 ## Auth Foundation
 
-- Provider-agnostic auth adapter seam exists at `src/lib/auth/adapter.ts`.
-- Current implementation uses `src/lib/auth/adapters/mock-auth-adapter.ts`.
-- Session state is persisted in local storage and mirrored to a lightweight cookie (`dochengv2-auth`) for middleware route protection.
+- The browser adapter calls server APIs; browser storage is never authorization.
+- Passwords use salted scrypt hashes. Sessions use opaque tokens stored as hashes.
+- Production cookies use the __Host- prefix, Secure, HttpOnly, SameSite=Lax, Path=/ and no Domain attribute.
+- Server routes revalidate account status, roles, verification and entitlements. Recovery links expire and are single-use.
+- Centralized sign-on is not enabled; tokens are never passed to unrelated frontends.
 
 Routes and protection:
 
@@ -98,10 +102,12 @@ Routes and protection:
 - `GET /signup`
 - `GET /account` (protected)
 - `GET /dashboard` (redirects to `/account`)
-- Middleware: `src/middleware.ts`
+- Protected administration: `/admin`; API ownership and role checks are independent of page routing.
 
 ## Next Operational Step
 
-If this folder has not been published yet, use the bootstrap guide in `docs/GITHUB_BOOTSTRAP.md` to initialize and push this repository to GitHub.
+Use [the operations runbook](docs/OPERATIONS.md) for persistent storage, backups, email, first-administrator provisioning and rollback. Copy `.env.example` for configuration; keep credentials in the hosting environment.
 
-After publishing, apply branch protections and security defaults using `docs/GITHUB_REPO_SETTINGS_CHECKLIST.md`.
+The actual Hostinger deployment uses this repository. Separate uploaded folders are preserved. [The audit](docs/UPGRADE-AUDIT.md) and [delivery ledger](docs/UPGRADE-DELIVERY.md) record evidence, checks and remaining acceptance gates.
+
+Live paid billing is inactive. Test offers require approved server configuration, test provider credentials and a separate licence secret. Cart totals and entitlements are reconciled against provider verification; browser callbacks never fulfil orders. Existing plan amounts remain proposals.

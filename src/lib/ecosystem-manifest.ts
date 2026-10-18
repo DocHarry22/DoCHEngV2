@@ -9,10 +9,11 @@ import {
   type EcosystemPricingModel,
   type EcosystemRegistryEntry,
   type EcosystemReleaseChannel,
-  type EcosystemVisibility
+  type EcosystemVisibility,
 } from "@/lib/ecosystem-registry";
 
-export type EcosystemAppStatus = "live" | "beta" | "early-access" | "planned" | "coming-soon" | "internal";
+export type EcosystemAppStatus =
+  "live" | "beta" | "early-access" | "planned" | "coming-soon" | "internal";
 
 export {
   EcosystemAccessType,
@@ -20,16 +21,23 @@ export {
   EcosystemPricingModel,
   EcosystemPlatform,
   EcosystemDistribution,
-  EcosystemReleaseChannel
+  EcosystemReleaseChannel,
 };
 
-export type EcosystemAppCategory = "platform" | "productivity" | "career" | "student" | "research";
+export type EcosystemAppCategory =
+  "platform" | "productivity" | "career" | "student" | "research";
 
-export type EcosystemParentRole = "parent-platform" | "product-branch" | "support-resource" | "internal-runtime";
+export type EcosystemParentRole =
+  | "parent-platform"
+  | "product-branch"
+  | "support-resource"
+  | "internal-runtime";
 
-export type EcosystemLaunchState = "public" | "invite-only" | "waitlist" | "internal";
+export type EcosystemLaunchState =
+  "public" | "invite-only" | "waitlist" | "internal";
 
-export type EcosystemMaturityLevel = "foundation" | "growth" | "expansion" | "experimental";
+export type EcosystemMaturityLevel =
+  "foundation" | "growth" | "expansion" | "experimental";
 
 export type EcosystemManifestApp = {
   id: string;
@@ -65,15 +73,19 @@ export type EcosystemManifestApp = {
   tags?: string[];
   launchState?: EcosystemLaunchState;
   maturityLevel?: EcosystemMaturityLevel;
+  verifiedWeb?: EcosystemRegistryEntry["verifiedWeb"];
 };
 
-const categoryMap: Record<EcosystemRegistryEntry["category"], EcosystemAppCategory> = {
+const categoryMap: Record<
+  EcosystemRegistryEntry["category"],
+  EcosystemAppCategory
+> = {
   platform: "platform",
   productivity: "productivity",
   career: "career",
   student: "student",
   research: "research",
-  adjacent: "platform"
+  adjacent: "platform",
 };
 
 const roleMap: Record<EcosystemRegistryEntry["role"], EcosystemParentRole> = {
@@ -82,36 +94,43 @@ const roleMap: Record<EcosystemRegistryEntry["role"], EcosystemParentRole> = {
   experimental: "internal-runtime",
   legacy: "support-resource",
   sibling: "support-resource",
-  "support-project": "support-resource"
+  "support-project": "support-resource",
 };
 
-const statusMap: Record<EcosystemRegistryEntry["status"], EcosystemAppStatus> = {
-  live: "live",
-  beta: "beta",
-  "early-access": "early-access",
-  planned: "planned",
-  "coming-soon": "coming-soon",
-  internal: "internal",
-  unknown: "planned"
-};
+const statusMap: Record<EcosystemRegistryEntry["status"], EcosystemAppStatus> =
+  {
+    live: "live",
+    beta: "beta",
+    "early-access": "early-access",
+    planned: "planned",
+    "coming-soon": "coming-soon",
+    internal: "internal",
+    unknown: "planned",
+  };
 
-const maturityMap: Record<EcosystemRegistryEntry["maturity"], EcosystemMaturityLevel> = {
+const maturityMap: Record<
+  EcosystemRegistryEntry["maturity"],
+  EcosystemMaturityLevel
+> = {
   production: "foundation",
   growth: "growth",
   beta: "growth",
   prototype: "expansion",
   experimental: "experimental",
   legacy: "expansion",
-  unknown: "expansion"
+  unknown: "expansion",
 };
 
-const themeAccentMap: Record<NonNullable<EcosystemManifestApp["iconKey"]>, string> = {
+const themeAccentMap: Record<
+  NonNullable<EcosystemManifestApp["iconKey"]>,
+  string
+> = {
   platform: "blue",
   desk: "blue",
   resume: "orange",
   compass: "emerald",
   research: "violet",
-  labs: "slate"
+  labs: "slate",
 };
 
 function toManifestApp(entry: EcosystemRegistryEntry): EcosystemManifestApp {
@@ -129,6 +148,7 @@ function toManifestApp(entry: EcosystemRegistryEntry): EcosystemManifestApp {
     parentRole: roleMap[entry.role],
     subdomain: entry.intendedSubdomain,
     webUrl: entry.currentUrl,
+    verifiedWeb: entry.verifiedWeb,
     internalRoute: entry.currentRoute ?? entry.placeholderRoute,
     accessTypes: entry.accessTypes,
     platforms: entry.platforms,
@@ -145,10 +165,12 @@ function toManifestApp(entry: EcosystemRegistryEntry): EcosystemManifestApp {
     distributions: entry.distributions,
     relatedApps: entry.relatedProjects,
     capabilities: entry.capabilities,
-    releaseChannels: entry.distributions?.map((distribution) => distribution.releaseChannel),
+    releaseChannels: entry.distributions?.map(
+      (distribution) => distribution.releaseChannel,
+    ),
     tags: entry.tags,
     launchState: entry.launchState,
-    maturityLevel: maturityMap[entry.maturity]
+    maturityLevel: maturityMap[entry.maturity],
   };
 }
 
@@ -167,9 +189,11 @@ function deepFreeze<T>(value: T): T {
   return value;
 }
 
-const manifestSeed: EcosystemManifestApp[] = getEcosystemApps().map(toManifestApp);
+const manifestSeed: EcosystemManifestApp[] =
+  getEcosystemApps().map(toManifestApp);
 
-export const ecosystemManifest: readonly EcosystemManifestApp[] = deepFreeze(manifestSeed);
+export const ecosystemManifest: readonly EcosystemManifestApp[] =
+  deepFreeze(manifestSeed);
 
 export const ecosystemStatusLabel: Record<EcosystemAppStatus, string> = {
   live: "Live",
@@ -177,14 +201,14 @@ export const ecosystemStatusLabel: Record<EcosystemAppStatus, string> = {
   "early-access": "Early Access",
   planned: "Planned",
   "coming-soon": "Coming Soon",
-  internal: "Internal"
+  internal: "Internal",
 };
 
 export const ecosystemAccessTypeLabel: Record<EcosystemAccessType, string> = {
   web: "Web",
   desktop: "Desktop",
   android: "Android",
-  hybrid: "Hybrid"
+  hybrid: "Hybrid",
 };
 
 export function getAllApps() {
@@ -192,7 +216,7 @@ export function getAllApps() {
 }
 
 export function getFeaturedApps() {
-  return getAllApps().filter((app) => app.featured);
+  return getPublicApps().filter((app) => app.featured);
 }
 
 export function getPublicApps() {
@@ -200,7 +224,7 @@ export function getPublicApps() {
 }
 
 export function getAppBySlug(slug: string) {
-  return ecosystemManifest.find((app) => app.slug === slug);
+  return getPublicApps().find((app) => app.slug === slug);
 }
 
 export function getAppsByStatus(status: EcosystemAppStatus) {
@@ -230,7 +254,10 @@ export function getAppsForDownloads() {
 
 export function getAppsForPricing() {
   return getAllApps().filter(
-    (app) => app.visibility === "public" && !!app.pricingHref && app.parentRole === "product-branch"
+    (app) =>
+      app.visibility === "public" &&
+      !!app.pricingHref &&
+      app.parentRole === "product-branch",
   );
 }
 
@@ -241,24 +268,46 @@ export function getAppsByCategory(category: EcosystemAppCategory) {
 export function getLauncherGroups() {
   const apps = getAppsForLauncher();
   const grouped = {
-    live: apps.filter((app) => app.status === "live" || app.status === "beta" || app.status === "early-access"),
-    upcoming: apps.filter((app) => app.status === "planned" || app.status === "coming-soon")
+    live: apps.filter(
+      (app) =>
+        app.status === "live" ||
+        app.status === "beta" ||
+        app.status === "early-access",
+    ),
+    upcoming: apps.filter(
+      (app) => app.status === "planned" || app.status === "coming-soon",
+    ),
   };
 
   return grouped;
 }
 
-export function getAppPrimaryAction(app: EcosystemManifestApp): { label: string; href: string; external?: boolean } {
-  if (app.status === "live" || app.status === "beta" || app.status === "early-access") {
-    if (app.webUrl) {
-      return { label: "Open App", href: app.webUrl, external: true };
+export function getAppPrimaryAction(app: EcosystemManifestApp): {
+  label: string;
+  href: string;
+  external?: boolean;
+} {
+  if (
+    app.status === "live" ||
+    app.status === "beta" ||
+    app.status === "early-access"
+  ) {
+    if (app.verifiedWeb && app.webUrl === app.verifiedWeb.url) {
+      return {
+        label: app.status === "beta" ? "Open Beta" : "Open Application",
+        href: app.webUrl,
+        external: true,
+      };
     }
 
-    return { label: "Open Branch", href: app.internalRoute ?? "/products" };
+    return { label: "View Product", href: app.internalRoute ?? "/products" };
   }
 
-  if (app.status === "coming-soon" || app.status === "planned") {
-    return { label: "Join Waitlist", href: app.supportHref ?? "/support#contact-form" };
+  if (app.status === "coming-soon") {
+    return {
+      label: "Join Waitlist",
+      href: `/support?product=${encodeURIComponent(app.slug)}#contact-form`,
+    };
   }
 
   return { label: "Learn More", href: app.roadmapHref ?? "/roadmap" };
@@ -271,7 +320,9 @@ export function getAppRouteMap() {
   }, {});
 }
 
-export function validateEcosystemManifest(apps: readonly EcosystemManifestApp[] = ecosystemManifest) {
+export function validateEcosystemManifest(
+  apps: readonly EcosystemManifestApp[] = ecosystemManifest,
+) {
   const errors: string[] = [];
   const ids = new Set<string>();
   const slugs = new Set<string>();
@@ -287,8 +338,14 @@ export function validateEcosystemManifest(apps: readonly EcosystemManifestApp[] 
     }
     slugs.add(app.slug);
 
-    if (app.visibility === "public" && app.parentRole === "product-branch" && !app.internalRoute) {
-      errors.push(`Public product-branch is missing internalRoute: ${app.slug}`);
+    if (
+      app.visibility === "public" &&
+      app.parentRole === "product-branch" &&
+      !app.internalRoute
+    ) {
+      errors.push(
+        `Public product-branch is missing internalRoute: ${app.slug}`,
+      );
     }
 
     if ((app.status === "live" || app.status === "beta") && !app.pricingHref) {
@@ -296,12 +353,14 @@ export function validateEcosystemManifest(apps: readonly EcosystemManifestApp[] 
     }
 
     if (app.status === "internal" && app.visibility !== "internal-only") {
-      errors.push(`Internal app must use internal-only visibility: ${app.slug}`);
+      errors.push(
+        `Internal app must use internal-only visibility: ${app.slug}`,
+      );
     }
   }
 
   return {
     valid: errors.length === 0,
-    errors
+    errors,
   };
 }

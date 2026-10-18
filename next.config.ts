@@ -3,21 +3,35 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   experimental: {
-    webpackBuildWorker: false
+    cpus: 2,
   },
-  eslint: {
-    ignoreDuringBuilds: true
+  poweredByHeader: false,
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-Frame-Options", value: "DENY" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          {
+            key: "Permissions-Policy",
+            value: "camera=(), microphone=(), geolocation=()",
+          },
+        ],
+      },
+    ];
   },
-  typescript: {
-    ignoreBuildErrors: true
+  async redirects() {
+    return [
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "docheng.co.za" }],
+        destination: "https://www.docheng.co.za/:path*",
+        permanent: true,
+      },
+    ];
   },
-  webpack: (config) => {
-    // OneDrive-backed workspaces can intermittently lose cache/chunk artifacts.
-    // Keep webpack outputs in memory to avoid ENOENT and MODULE_NOT_FOUND churn.
-    config.cache = false;
-
-    return config;
-  }
 };
 
 export default nextConfig;

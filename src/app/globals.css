@@ -107,7 +107,7 @@
   --border-subtle: rgba(17, 28, 45, 0.1);
   --border-strong: rgba(17, 28, 45, 0.22);
 
-  --accent-primary: #1f8eff;
+  --accent-primary: #075fbe;
   --accent-secondary: #0f5fb5;
 
   --shadow-soft: 0 10px 28px rgba(18, 28, 44, 0.12);
@@ -194,9 +194,11 @@ body::after {
   will-change: transform;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+@layer base {
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
 }
 
 .cosmic-hero {

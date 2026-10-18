@@ -18,6 +18,7 @@ export type SessionUser = {
   name: string;
   email: string;
   role: AuthRole;
+  emailVerified?: boolean;
 };
 
 export type AppSession = {
@@ -26,7 +27,8 @@ export type AppSession = {
   entitlements: ProductEntitlement[];
 };
 
-export type AccessDecisionState = "guest" | "included" | "requires-access" | "coming-soon";
+export type AccessDecisionState =
+  "guest" | "included" | "requires-access" | "coming-soon";
 
 export type AccessDecision = {
   state: AccessDecisionState;
