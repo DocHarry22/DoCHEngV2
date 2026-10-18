@@ -168,7 +168,14 @@ test("public pages have no critical or serious automated accessibility violation
   for (const theme of ["dark", "light"]) {
   await page.goto("/");
   const isDark = await page.locator("html").evaluate((element) => element.classList.contains("dark"));
-  if (isDark !== (theme === "dark")) await page.getByRole("button", {name: "Toggle color mode"}).click();
+  if (isDark !== (theme === "dark")) {
+    const toggle = page.getByRole("button", {name: "Toggle color mode"});
+    const mobileMenu = page.getByRole("button", {name: "Toggle navigation menu"});
+    const openMenu = !(await toggle.isVisible());
+    if (openMenu) await mobileMenu.click();
+    await toggle.click();
+    if (openMenu) await mobileMenu.click();
+  }
   for (const path of [
     "/",
     "/apps",
