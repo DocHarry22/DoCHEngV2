@@ -54,6 +54,14 @@ test("public routes, catalogue filters and responsive layout", async ({
   await expect(
     page.getByRole("link", { name: "DoCHEng Compass", exact: true }),
   ).toBeVisible();
+  const mobileToggle = page.getByRole("button", {name: "Toggle navigation menu"});
+  if (await mobileToggle.isVisible()) {
+    await mobileToggle.click();
+    const navigation = page.getByRole("navigation", {name: "Mobile primary"});
+    await expect(navigation).toBeVisible();
+    await navigation.getByRole("link", {name: "Home", exact: true}).click();
+    await expect(mobileToggle).toHaveAttribute("aria-expanded", "false");
+  }
   expect(errors).toEqual([]);
 });
 test("calculator validates and produces an independent reference result", async ({
@@ -67,7 +75,7 @@ test("calculator validates and produces an independent reference result", async 
   await expect(page.locator(".result-panel")).toContainText(/0[,.]196133/);
   await page.getByLabel("Pump efficiency (%)", { exact: true }).fill("0");
   await page.getByRole("button", { name: "Calculate", exact: true }).click();
-  await expect(page.getByRole("alert")).toContainText("efficiency");
+  await expect(page.locator("main").getByRole("alert")).toContainText("efficiency");
 });
 test("forged browser sessions cannot unlock account or administrator routes", async ({
   page,
@@ -158,6 +166,9 @@ test("public pages have no critical or serious automated accessibility violation
 }) => {
   test.setTimeout(120_000);
   for (const theme of ["dark", "light"]) {
+  await page.goto("/");
+  const isDark = await page.locator("html").evaluate((element) => element.classList.contains("dark"));
+  if (isDark !== (theme === "dark")) await page.getByRole("button", {name: "Toggle color mode"}).click();
   for (const path of [
     "/",
     "/apps",
@@ -167,10 +178,7 @@ test("public pages have no critical or serious automated accessibility violation
     "/signup",
   ]) {
     await page.goto(path);
-    await page.evaluate((value) => {
-      document.documentElement.classList.toggle("dark", value === "dark");
-      document.documentElement.style.colorScheme = value;
-    }, theme);
+    await expect(page.locator("html")).toHaveClass(theme === "dark" ? /dark/ : /light/);
     await page.addScriptTag({
       path: resolve("node_modules/axe-core/axe.min.js"),
     });
