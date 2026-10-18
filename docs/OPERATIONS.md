@@ -6,6 +6,8 @@ Keep the existing Hostinger Next.js Node 22 application connected to `DocHarry22
 
 Build with `npm ci` and `npm run build`; start with `npm start` or the existing provider-generated Next.js startup. Node must support built-in `node:sqlite` (22.13 or newer). This is a single-host deployment; a multi-instance deployment requires a shared transactional database and shared object storage first.
 
+Git auto-deployment is enabled for the existing installation, canonical repository and `main` branch. After merging, inspect the resulting build before starting another build manually. Provider-generated standalone deployments may omit repository tools; use an operator checkout of this same revision on the hosting account when running the administrative CLI.
+
 ## Persistent state and backups
 
 The default production directory is the hosting user's `$HOME/.local/share/docheng-platform`, outside the replaceable deployment tree. Set `DOCHENG_DATA_DIR` to override it with an absolute persistent path. The database, media and release files must never be under `public_html`, the repository or `.next`.

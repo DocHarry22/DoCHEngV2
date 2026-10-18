@@ -8,5 +8,5 @@
   "hashMatchesGitHubDigest": true,
   "verificationDate": "2026-10-18T21:39:42.381Z",
   "installationTested": false,
-  "note": "Android 6.0/API 23 minimum is declared in current source variables.gradle; this does not independently establish binary compatibility or runtime operation."
+  "note": "Android 6.0/API 23 minimum is declared in variables.gradle at the exact android-v1.0.3 source tag; this does not independently establish binary compatibility or runtime operation."
 }
