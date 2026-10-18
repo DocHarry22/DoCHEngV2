@@ -11,7 +11,8 @@ import { changelogEntries } from "@/lib/changelog-content";
 import { docCategoryMeta, docsArticles, getDocsByCategory, getDocsForReleaseSlug } from "@/lib/docs-content";
 
 export const metadata: Metadata = {
-  title: "Documentation | DoCHEngV2",
+  title: "Documentation",
+  alternates: { canonical: "/docs" },
   description: "Documentation and help articles for setup, product workflows, pricing access, account support, and business pathways."
 };
 

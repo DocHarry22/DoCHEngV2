@@ -42,3 +42,5 @@ Apologia Sancta has a genuine public Android 1.0.3 APK. Downloaded bytes indepen
 Public screenshots are captured from entry interfaces, labelled by their actual scope. Resume's original marketing page contains review and customer claims that this audit does not validate; the scanner interface is used instead. Sister-store entry checks do not validate their transactions or marketing assertions.
 
 The runtime registry now contains only public parent/core records. Internal discovery records and filesystem paths were removed from client-shared data rather than merely hidden by a UI filter. A private inventory is retained outside this public repository.
+
+Post-deployment inspection of `.htaccess` confirms Hostinger changed the active Passenger root to `/home/u836398163/domains/docheng.co.za/hbuilds/current/nodejs`. This is the provider-managed versioned deployment, sourced from the verified GitHub main branch. The earlier `/nodejs` path above records the baseline, not the current working directory. Persistent platform state remains separately configured outside both deployment locations.

@@ -2,7 +2,7 @@
 
 ## Existing deployment
 
-Keep the existing Hostinger Next.js Node 22 application connected to `DocHarry22/DoCHEngV2`. The baseline deployment is `8300c2d1d15356b20297eb6067bd493565d8a128`. Hostinger's Passenger application lives at `/home/u836398163/domains/docheng.co.za/nodejs`; `public_html/.builds` contains deployment infrastructure. The `desk`, `resume`, `coursecampass` and `calc` folders are separate uploaded sites. Do not replace the entire document root or delete those folders.
+Keep the existing Hostinger Next.js Node 22 application connected to `DocHarry22/DoCHEngV2`. The baseline deployment is `8300c2d1d15356b20297eb6067bd493565d8a128`. The baseline Passenger root was `/home/u836398163/domains/docheng.co.za/nodejs`. After the October deployment, the authenticated `.htaccess` read confirms the active root is `/home/u836398163/domains/docheng.co.za/hbuilds/current/nodejs`, with the provider managing the current-version switch and preload configuration. The `desk`, `resume`, `coursecampass` and `calc` folders are separate uploads in public_html. Do not replace the entire document root, edit generated deployment files, or delete those folders.
 
 Build with `npm ci` and `npm run build`; start with `npm start` or the existing provider-generated Next.js startup. Node must support built-in `node:sqlite` (22.13 or newer). This is a single-host deployment; a multi-instance deployment requires a shared transactional database and shared object storage first.
 

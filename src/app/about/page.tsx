@@ -15,6 +15,12 @@ import {
   teamStructure
 } from "@/lib/company-content";
 
+export const metadata = {
+  title: "About",
+  description: "The DoCHEng purpose, engineering principles and software ecosystem.",
+  alternates: { canonical: "/about" }
+};
+
 export default function AboutPage() {
   return (
     <div className="space-y-20 pb-20">
