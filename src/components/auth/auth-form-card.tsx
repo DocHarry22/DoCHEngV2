@@ -97,6 +97,7 @@ export function AuthFormCard({
             required
             maxLength={254}
             autoComplete="email"
+            disabled={isLoading || isSubmitting}
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             className="w-full rounded-xl border border-(--border-strong) bg-(--surface-1) px-4 py-3 text-sm outline-none transition focus:border-(--accent-primary)"
@@ -112,6 +113,7 @@ export function AuthFormCard({
               required
               maxLength={100}
               autoComplete="name"
+              disabled={isLoading || isSubmitting}
               value={name}
               onChange={(event) => setName(event.target.value)}
               className="w-full rounded-xl border border-(--border-strong) bg-(--surface-1) px-4 py-3 text-sm outline-none transition focus:border-(--accent-primary)"
@@ -126,6 +128,7 @@ export function AuthFormCard({
             type="password"
             required
             minLength={12}
+            disabled={isLoading || isSubmitting}
             maxLength={128}
             autoComplete={
               mode === "signin" ? "current-password" : "new-password"

@@ -24,6 +24,7 @@ Pull request: https://github.com/DocHarry22/DoCHEngV2/pull/3. Application candid
 - An initial browser run reused another app already on local port 3100. Those results are invalid and excluded. The harness now uses an isolated port, disables reuse, and verifies the platform health response.
 - Browser checks identified a hidden desktop dropdown extending the page width, implicit select labels including option values, locale-dependent decimal formatting, a calculator selector also matching Next's route announcer, and a global link rule overriding light-mode button colours. Corrections pass the full Linux browser regression. Local Windows registration, support persistence, logout and forged-session checks also pass on all three viewport sizes.
 - The development lint dependency chain has an unresolved upstream `braces` advisory. Production dependency audit reports zero vulnerabilities. No framework downgrade or forced breaking audit fix was applied.
+- A later CI run passed 17 browser checks but exposed a genuine readiness race in desktop signup: the first field accepted input before hydration, then the initial session refresh cleared it. Auth inputs now remain disabled until the initial session check completes. The normal registration workflow exercises this readiness boundary.
 
 ## Operational boundaries
 

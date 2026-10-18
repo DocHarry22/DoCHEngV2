@@ -48,6 +48,7 @@ export function createAuthAdapter(): AuthAdapter {
         const response = await fetch("/api/auth/session", {
           cache: "no-store",
           credentials: "same-origin",
+          signal: AbortSignal.timeout(10_000),
         });
         return response.ok ? ((await response.json()) as AppSession) : guest;
       } catch {

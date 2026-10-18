@@ -34,9 +34,11 @@ describe("server-backed account UI", () => {
         <AuthFormCard mode="signin" />
       </AuthProvider>,
     );
+    expect(screen.getByLabelText("Email")).toBeDisabled();
     await waitFor(() =>
       expect(screen.getByRole("button", { name: /sign in/i })).toBeEnabled(),
     );
+    expect(screen.getByLabelText("Email")).toBeEnabled();
     expect(localStorage.getItem("dochengv2.session.v1")).toBeNull();
     expect(push).not.toHaveBeenCalled();
   });
