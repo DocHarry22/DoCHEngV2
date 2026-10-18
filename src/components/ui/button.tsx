@@ -13,16 +13,21 @@ type ButtonProps = {
 
 const variantMap: Record<ButtonVariant, string> = {
   primary:
-    "bg-[var(--accent-primary)] text-white shadow-[var(--shadow-soft)] hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-canvas)]",
+    "bg-[#075fbe] text-white shadow-[var(--shadow-soft)] hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-canvas)]",
   ghost:
-    "border border-[var(--border-strong)] bg-[var(--surface-1)] text-[var(--text-main)] hover:bg-[var(--surface-2)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-canvas)]"
+    "border border-[var(--border-strong)] bg-[var(--surface-1)] text-[var(--text-main)] hover:bg-[var(--surface-2)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-canvas)]",
 };
 
-export function Button({ children, href, variant = "primary", className }: ButtonProps) {
+export function Button({
+  children,
+  href,
+  variant = "primary",
+  className,
+}: ButtonProps) {
   const classes = cn(
     "inline-flex items-center justify-center rounded-xl px-5 py-3 text-sm font-semibold tracking-[0.04em] transition",
     variantMap[variant],
-    className
+    className,
   );
 
   if (href) {

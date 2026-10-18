@@ -42,3 +42,9 @@ apps/**/.turbo
 # editor/OS artifacts
 .vscode/
 Thumbs.db
+/.data/
+/.test-data/
+/.npm-start.log
+/next-latest.json
+/test-results/
+/playwright-report/

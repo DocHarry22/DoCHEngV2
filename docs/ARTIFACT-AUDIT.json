@@ -1,0 +1,12 @@
+{
+  "product": "Apologia Sancta",
+  "tag": "android-v1.0.3",
+  "publishedAt": "2026-08-24T21:16:59Z",
+  "url": "https://github.com/DocHarry22/apologiasancta-ui/releases/download/android-v1.0.3/apologia-sancta.apk",
+  "bytes": 7301602,
+  "sha256": "e170aec135e1e4dcdfe38e91ac54b357a5f9a75e0a5de2099ec8ed5366925cd1",
+  "hashMatchesGitHubDigest": true,
+  "verificationDate": "2026-10-18T21:39:42.381Z",
+  "installationTested": false,
+  "note": "Android 6.0/API 23 minimum is declared in current source variables.gradle; this does not independently establish binary compatibility or runtime operation."
+}

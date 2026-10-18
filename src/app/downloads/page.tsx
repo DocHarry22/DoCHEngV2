@@ -1,137 +1,122 @@
-import type { Metadata } from "next";
-
-import { DistributionCatalog } from "@/components/ecosystem/distribution-catalog";
-import { DownloadCTAGroup } from "@/components/ecosystem/download-cta-group";
-import { SectionEyebrow } from "@/components/ecosystem/section-eyebrow";
-import { Reveal } from "@/components/motion/reveal";
-import { Card } from "@/components/ui/card";
+import Link from "next/link";
+import { publishedCatalogue } from "@/lib/server/catalogue";
 import { Section } from "@/components/ui/section";
-import {
-  distributionBuilds,
-  distributionAccessGuide,
-  distributionOverviewBullets,
-  releaseChannelNotes
-} from "@/lib/distribution-content";
-
-export const metadata: Metadata = {
-  title: "Downloads | DoCHEngV2",
+import { Card } from "@/components/ui/card";
+export const dynamic = "force-dynamic";
+export const metadata = {
+  title: "Verified downloads",
   description:
-    "Download and install DoCHEng product branches across Desktop and Android with clear release channels, access requirements, and rollout notes."
+    "Verified DoCHEng release files, SHA-256 checksums, system requirements and installation guidance.",
+  alternates: { canonical: "/downloads" },
 };
-
-export default function DownloadsPage() {
-  const availableBuildCount = distributionBuilds.filter((build) => build.status === "available").length;
-  const limitedBuildCount = distributionBuilds.filter((build) => build.status === "limited").length;
-  const upcomingBuildCount = distributionBuilds.filter((build) => build.status === "coming-soon").length;
-
+export default function Downloads() {
+  const products = publishedCatalogue();
   return (
-    <>
-      <Section className="scroll-mt-24 pb-10 pt-14 sm:pt-20">
-        <Reveal>
-          <SectionEyebrow className="tracking-[0.2em]">Distribution Flow</SectionEyebrow>
-          <h1 className="mt-5 text-balance text-4xl font-semibold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
-            Download each branch with platform clarity and release-stage confidence.
-          </h1>
-          <p className="mt-6 max-w-3xl text-base leading-relaxed text-[var(--text-subtle)] sm:text-lg">
-            This hub centralizes DoCHEng distribution across Desktop and Android so users can see version status, release channel, access requirements,
-            and setup guidance before installation.
+    <Section className="space-y-8 py-16">
+      <p className="eyebrow">Software distribution</p>
+      <h1 className="text-4xl font-semibold sm:text-5xl">
+        Downloads you can verify.
+      </h1>
+      <p className="max-w-3xl text-lg text-[var(--text-subtle)]">
+        Find published release files, checksums, platform requirements and
+        release notes. Web availability is separate from Windows and Android
+        installer availability.
+      </p>
+      {!products
+        .filter((p) => ["desk", "resume", "compass"].includes(p.slug))
+        .some((p) => p.releases.length) ? (
+        <Card className="space-y-4">
+          <h2 className="text-2xl font-semibold">
+            Core DoCHEng installers are not yet verified
+          </h2>
+          <p className="leading-relaxed text-[var(--text-subtle)]">
+            The repository release collections checked for Desk, Resume and
+            Paperplane do not contain downloadable releases. Previously
+            displayed installer versions have been withdrawn until actual files
+            can be verified.
           </p>
-          <DownloadCTAGroup
-            className="mt-8"
-            actions={[
-              { label: "Browse Build Catalog", href: "#build-catalog" },
-              { label: "Compare Pricing Access", href: "/pricing", variant: "ghost" }
-            ]}
-          />
-        </Reveal>
-      </Section>
-
-      <Section className="py-10 sm:py-12">
-        <Reveal>
-          <Card className="space-y-5 bg-[var(--surface-0)]">
-            <div>
-              <SectionEyebrow>How Distribution Works</SectionEyebrow>
-              <h2 className="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">One parent delivery standard, branch-specific release readiness.</h2>
-            </div>
-
-            <div className="space-y-2 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-1)] p-4">
-              {distributionOverviewBullets.map((line) => (
-                <p key={line} className="text-sm leading-relaxed text-[var(--text-subtle)]">
-                  <span className="mr-2 inline-block h-1.5 w-1.5 rounded-full bg-[var(--accent-primary)] align-middle" />
-                  {line}
+          <div className="flex flex-wrap gap-4">
+            <Link className="text-link" href="/apps">
+              Explore web applications
+            </Link>
+            <Link className="text-link" href="/support#contact-form">
+              Ask about installation or release updates
+            </Link>
+          </div>
+        </Card>
+      ) : null}
+      {products.map((p) => (
+        <section id={p.slug} key={p.id} className="scroll-mt-24 space-y-4">
+          <h2 className="text-2xl font-semibold">{p.name}</h2>
+          {p.releases.length ? (
+            p.releases.map((r) => (
+              <Card key={r.id} className="space-y-3">
+                <h3 className="text-xl font-semibold">
+                  {r.version} · {r.platform}
+                </h3>
+                <p>
+                  {r.channel} · {r.releasedAt} ·{" "}
+                  {(r.bytes / 1024 / 1024).toFixed(1)} MB
                 </p>
-              ))}
-            </div>
-
-            <div className="grid gap-3 sm:grid-cols-3">
-              {releaseChannelNotes.map((note) => (
-                <div key={note.channel} className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-1)] p-4">
-                  <p className="text-sm font-semibold">{note.title}</p>
-                  <p className="mt-2 text-sm leading-relaxed text-[var(--text-subtle)]">{note.summary}</p>
-                </div>
-              ))}
-            </div>
-
-            <div className="grid gap-3 sm:grid-cols-3">
-              <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-1)] p-4">
-                <p className="text-xs uppercase tracking-[0.12em] text-[var(--text-muted)]">Available</p>
-                <p className="mt-1 text-2xl font-semibold">{availableBuildCount}</p>
-              </div>
-              <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-1)] p-4">
-                <p className="text-xs uppercase tracking-[0.12em] text-[var(--text-muted)]">Limited</p>
-                <p className="mt-1 text-2xl font-semibold">{limitedBuildCount}</p>
-              </div>
-              <div className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-1)] p-4">
-                <p className="text-xs uppercase tracking-[0.12em] text-[var(--text-muted)]">Coming Soon</p>
-                <p className="mt-1 text-2xl font-semibold">{upcomingBuildCount}</p>
-              </div>
-            </div>
-          </Card>
-        </Reveal>
-      </Section>
-
-      <Section id="build-catalog" className="scroll-mt-24 py-10 sm:py-12">
-        <Reveal>
-          <SectionEyebrow>Build Catalog</SectionEyebrow>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">Desktop and Android releases mapped by branch.</h2>
-        </Reveal>
-
-        <DistributionCatalog builds={distributionBuilds} />
-      </Section>
-
-      <Section className="py-10 sm:py-12">
-        <div className="grid gap-5 lg:grid-cols-[1fr_1fr]">
-          <Reveal>
-            <Card className="space-y-4">
-              <SectionEyebrow>Access Requirements</SectionEyebrow>
-              {distributionAccessGuide.map((guide) => (
-                <div key={guide.label} className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-0)] p-4">
-                  <h3 className="text-sm font-semibold uppercase tracking-[0.08em]">{guide.label}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-[var(--text-subtle)]">{guide.summary}</p>
-                </div>
-              ))}
-            </Card>
-          </Reveal>
-
-          <Reveal delayMs={120}>
-            <div id="support" className="scroll-mt-24">
-              <Card className="space-y-4">
-                <SectionEyebrow>Support Path</SectionEyebrow>
-                <p className="text-sm leading-relaxed text-[var(--text-subtle)]">
-                  Need help selecting a release channel, mapping branch access, or activating a paid or waitlist track? DoCHEng support can align your
-                  setup with your use case.
+                <p>{r.notes}</p>
+                <p>
+                  <strong>Requirements:</strong> {r.requirements}
                 </p>
-                <DownloadCTAGroup
-                  actions={[
-                    { label: "Contact Distribution Support", href: "/support#technical" },
-                    { label: "Explore Product Branches", href: "/products", variant: "ghost" }
-                  ]}
-                />
+                <p className="break-all font-mono text-xs">
+                  SHA-256: {r.sha256}
+                </p>
+                <a
+                  className="action-button"
+                  href={r.externalUrl ?? "/api/downloads/" + r.id}
+                  target={r.externalUrl ? "_blank" : undefined}
+                  rel={r.externalUrl ? "noopener noreferrer" : undefined}
+                >
+                  Download for {r.platform}
+                </a>
+                {r.publisherUrl ? (
+                  <a
+                    className="text-link ml-4"
+                    href={r.publisherUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Publisher release notes
+                  </a>
+                ) : null}
               </Card>
-            </div>
-          </Reveal>
-        </div>
-      </Section>
-    </>
+            ))
+          ) : (
+            <p className="text-sm text-[var(--text-subtle)]">
+              No Windows or Android installer has been independently verified
+              for this product.
+            </p>
+          )}
+        </section>
+      ))}
+      <Card className="space-y-4">
+        <h2 className="text-2xl font-semibold">
+          Check an installer before running it
+        </h2>
+        <p>
+          On Windows, use PowerShell to compare the downloaded file with its
+          published checksum:
+        </p>
+        <pre className="overflow-x-auto rounded-lg bg-[var(--surface-0)] p-4 text-sm">
+          Get-FileHash -Algorithm SHA256 -LiteralPath .\installer.exe
+        </pre>
+        <p className="text-sm">
+          A checksum confirms file integrity against the published value. It
+          does not establish publisher signing or prove that software is safe.
+        </p>
+        <p>
+          <strong>Stable:</strong> approved releases. <strong>Beta:</strong>{" "}
+          test releases. <strong>Preview:</strong> early evaluations. No
+          development build is automatically promoted to stable.
+        </p>
+        <Link className="text-link" href="/support#contact-form">
+          Installation troubleshooting
+        </Link>
+      </Card>
+    </Section>
   );
 }

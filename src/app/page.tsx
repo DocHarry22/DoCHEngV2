@@ -1,277 +1,319 @@
-import { ArchitectureStrip } from "@/components/ecosystem/architecture-strip";
-import { DownloadCTAGroup } from "@/components/ecosystem/download-cta-group";
-import { AuthGatedProductCard } from "@/components/auth/auth-gated-product-card";
-import { PillarCard } from "@/components/ecosystem/pillar-card";
-import { PricingPreviewCard } from "@/components/ecosystem/pricing-preview-card";
-import { SectionEyebrow } from "@/components/ecosystem/section-eyebrow";
-import { BrandLockup } from "@/components/branding/brand-lockup";
-import { Reveal } from "@/components/motion/reveal";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import Link from "next/link";
+import { publishedCatalogue } from "@/lib/server/catalogue";
+import { categories, productAction } from "@/lib/catalogue";
+import { engineeringTools } from "@/lib/engineering-tools";
 import { Section } from "@/components/ui/section";
-import { domainArchitecture, ecosystemProducts, valuePillars } from "@/lib/site-content";
-import { roadmapPhases } from "@/lib/roadmap-content";
-
-const statusTone = {
-  live: "text-emerald-600 dark:text-emerald-300",
-  beta: "text-amber-600 dark:text-amber-300",
-  "coming-soon": "text-sky-700 dark:text-sky-300"
-} as const;
-
-const activeBranches = ecosystemProducts.filter((product) => product.status !== "coming-soon");
-const futureBranches = ecosystemProducts.filter((product) => product.status === "coming-soon");
-
-export default function HomePage() {
+import { Card } from "@/components/ui/card";
+import { BrandLockup } from "@/components/branding/brand-lockup";
+import { ProductIcon } from "@/components/apps/product-icon";
+import { ProductFinder } from "@/components/apps/product-finder";
+import { Newsletter } from "@/components/marketing/newsletter";
+export const dynamic = "force-dynamic";
+export const metadata = {
+  title: "DoCHEng — Driven by Curiosity",
+  description:
+    "Purposeful software for engineering, research, documents and technical careers. Explore DoCHEng apps and free engineering tools.",
+  alternates: { canonical: "/" },
+};
+export default function Home() {
+  const products = publishedCatalogue();
   return (
     <>
-      <Section id="home" className="ecosystem-hero scroll-mt-24 pb-12 pt-14 sm:pt-20">
-        <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr]">
-          <Reveal>
-            <SectionEyebrow className="tree-kicker tracking-[0.2em]">Parent Engineering Tree</SectionEyebrow>
-            <h1 className="mt-5 text-balance text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
-              One root platform. Multiple app branches. More growth ahead.
+      <Section id="home" className="ecosystem-hero pb-12 pt-16 sm:pt-24">
+        <div className="grid items-center gap-12 lg:grid-cols-[1.1fr_1fr]">
+          <div>
+            <p className="eyebrow">Independent software. Connected thinking.</p>
+            <h1 className="mt-6 text-5xl font-semibold leading-[1.08] tracking-tight sm:text-6xl lg:text-7xl">
+              Curiosity,
+              <br />
+              put to <span className="text-[var(--accent-primary)]">work.</span>
             </h1>
-            <p className="mt-6 max-w-2xl text-base leading-relaxed text-[var(--text-subtle)] sm:text-lg">
-              DoCHEng now presents the ecosystem as a living product tree: the parent root at `docheng.co.za`, active branches for current apps,
-              and future branches already mapped for products still to be built.
+            <p className="mt-7 max-w-xl text-lg leading-relaxed text-[var(--text-subtle)]">
+              One engineering root. A growing collection of tools for your
+              research, documents, career and technical work.
             </p>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              <Button href="/#products">Explore Apps</Button>
-              <Button href="/downloads" variant="ghost">
-                Open Downloads
-              </Button>
-              <Button href="/#architecture" variant="ghost">
-                View Tree Architecture
-              </Button>
+            <div className="mt-8 flex flex-wrap gap-4">
+              <Link className="action-button" href="/apps">
+                Explore applications →
+              </Link>
+              <Link className="text-link self-center" href="/tools">
+                Open engineering tools
+              </Link>
             </div>
-            <div className="mt-8 grid max-w-xl grid-cols-1 gap-2 sm:grid-cols-3">
-              <div className="tree-stat-card rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-0)] px-3 py-2">
-                <p className="text-xs text-[var(--text-muted)]">Live Branches</p>
-                <p className="text-lg font-semibold">{activeBranches.length}</p>
-              </div>
-              <div className="tree-stat-card rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-0)] px-3 py-2">
-                <p className="text-xs text-[var(--text-muted)]">Future Branches</p>
-                <p className="text-lg font-semibold">{futureBranches.length + 1}</p>
-              </div>
-              <div className="tree-stat-card rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-0)] px-3 py-2">
-                <p className="text-xs text-[var(--text-muted)]">Platforms</p>
-                <p className="text-lg font-semibold">Desktop + Android</p>
-              </div>
-            </div>
-          </Reveal>
-
-          <Reveal delayMs={120} className="relative">
-            <Card className="tree-canvas space-y-6">
-              <div className="tree-root-panel rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-2)] p-4">
-                <p className="mb-2 font-mono text-xs uppercase tracking-[0.14em] text-[var(--text-muted)]">Root Node</p>
-                <BrandLockup linked={false} />
-              </div>
-              <div className="space-y-4">
-                <p className="font-mono text-xs uppercase tracking-[0.16em] text-[var(--accent-secondary)]">Branch Map</p>
-                <p className="text-sm text-[var(--text-subtle)]">
-                  Every branch carries the same technical standards, product language, and distribution strategy while serving a specific execution workflow.
-                </p>
-                <div className="tree-map grid gap-4 pt-1 sm:grid-cols-2">
-                  <div className="space-y-2">
-                    <p className="tree-lane-label">Active Branches</p>
-                    {activeBranches.map((product) => (
-                      <div key={product.slug} className="branch-node branch-node-active">
-                        <p className="text-sm font-semibold">{product.name}</p>
-                        <p className={`text-[11px] font-semibold uppercase tracking-[0.1em] ${statusTone[product.status]}`}>{product.status}</p>
-                        <p className="mt-1 text-xs text-[var(--text-muted)]">{product.subdomain}</p>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="space-y-2">
-                    <p className="tree-lane-label">Future Growth</p>
-                    {futureBranches.map((product) => (
-                      <div key={product.slug} className="branch-node branch-node-future">
-                        <p className="text-sm font-semibold">{product.name}</p>
-                        <p className={`text-[11px] font-semibold uppercase tracking-[0.1em] ${statusTone[product.status]}`}>{product.status}</p>
-                        <p className="mt-1 text-xs text-[var(--text-muted)]">{product.subdomain}</p>
-                      </div>
-                    ))}
-                    <div className="branch-node branch-node-future">
-                      <p className="text-sm font-semibold">Future Product</p>
-                      <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--text-muted)]">planned</p>
-                      <p className="mt-1 text-xs text-[var(--text-muted)]">future-product.docheng.co.za</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </Card>
-          </Reveal>
-        </div>
-      </Section>
-
-      <Section id="about" className="scroll-mt-24 py-10 sm:py-12">
-        <Reveal>
-          <Card className="grid gap-5 bg-[var(--surface-0)] sm:grid-cols-[0.65fr_1.35fr] sm:items-start">
-            <div>
-              <p className="font-mono text-xs uppercase tracking-[0.2em] text-[var(--accent-secondary)]">About The Ecosystem</p>
-              <h2 className="mt-3 text-2xl font-semibold tracking-tight">A visual system built around growth.</h2>
-            </div>
-            <p className="text-base leading-relaxed text-[var(--text-subtle)] sm:text-lg">
-              The redesign positions each product as a branch from the same engineering root. This makes navigation clearer, communicates expansion plans,
-              and tells users exactly where each app belongs in the bigger DoCHEng journey.
+            <p className="mt-8 font-mono text-xs text-[var(--text-muted)]">
+              ENGINEERING · DOCUMENTS · CAREERS · RESEARCH
             </p>
-          </Card>
-        </Reveal>
-      </Section>
-
-      <Section id="value" className="py-10 sm:py-12">
-        <Reveal>
-          <SectionEyebrow>What DoCHEng Helps You Do</SectionEyebrow>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">Build better outcomes across study, work, and technical growth.</h2>
-        </Reveal>
-        <div className="mt-8 grid gap-5 md:grid-cols-3">
-          {valuePillars.map((pillar, index) => (
-            <Reveal key={pillar.title} delayMs={index * 90}>
-              <PillarCard title={pillar.title} description={pillar.body} emphasized={index === 0} />
-            </Reveal>
-          ))}
-        </div>
-      </Section>
-
-      <Section id="products" className="scroll-mt-24 py-10 sm:py-12">
-        <Reveal>
-          <SectionEyebrow>Current Branches</SectionEyebrow>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">Specialized apps connected by one parent root.</h2>
-        </Reveal>
-        <div className="mt-8 grid gap-5 md:grid-cols-3">
-          {ecosystemProducts.map((product, index) => (
-            <Reveal key={product.slug} delayMs={index * 90}>
-              <AuthGatedProductCard product={product} featured />
-            </Reveal>
-          ))}
-        </div>
-      </Section>
-
-      <Section id="platforms" className="py-10 sm:py-12">
-        <Reveal>
-          <Card className="bg-[var(--surface-0)]">
-            <SectionEyebrow>Desktop + Android Access</SectionEyebrow>
-            <h2 className="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">Every branch ships on both major pathways.</h2>
-            <div className="mt-6 grid gap-3 sm:grid-cols-2">
-              <Card className="shadow-none">
-                <h3 className="text-lg font-semibold">Desktop Distribution</h3>
-                <p className="mt-2 text-sm leading-relaxed text-[var(--text-subtle)]">
-                  Install high-focus technical workflows on desktop for deep execution, larger workspaces, and full engineering context.
-                </p>
-                <DownloadCTAGroup className="mt-4" actions={[{ label: "Browse Desktop Builds", href: "/downloads", variant: "ghost" }]} />
-              </Card>
-              <Card className="shadow-none">
-                <h3 className="text-lg font-semibold">Android Distribution</h3>
-                <p className="mt-2 text-sm leading-relaxed text-[var(--text-subtle)]">
-                  Keep each branch portable with Android companions built for capture, review, and quick technical action in the field.
-                </p>
-                <DownloadCTAGroup className="mt-4" actions={[{ label: "Browse Android Builds", href: "/downloads", variant: "ghost" }]} />
-              </Card>
+          </div>
+          <div className="ecosystem-stage">
+            <div className="mx-auto w-fit rounded-2xl border border-[var(--border-strong)] bg-[var(--surface-1)] p-5">
+              <BrandLockup linked={false} />
             </div>
-          </Card>
-        </Reveal>
-      </Section>
-
-      <Section id="pricing" className="scroll-mt-24 py-10 sm:py-12">
-        <Reveal>
-          <Card className="space-y-6 bg-[var(--surface-0)]">
-            <div>
-              <SectionEyebrow>Pricing By Branch Type</SectionEyebrow>
-              <h2 className="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">Flexible models for different stages of ecosystem growth.</h2>
-            </div>
-            <div className="grid gap-3 md:grid-cols-3">
-              {ecosystemProducts.map((product) => (
-                <PricingPreviewCard
-                  key={product.slug}
-                  productName={product.name}
-                  pricingModel={product.pricingModel}
-                  startingPrice={product.startingPrice}
-                  summary={product.positioning}
-                  planNote={product.plans[0]?.summary}
-                  cta={{ label: "View Branch", href: `/products/${product.slug}`, variant: "ghost" }}
-                />
+            <svg
+              className="tree-connectors"
+              viewBox="0 0 360 60"
+              preserveAspectRatio="none"
+              fill="none"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                d="M180 0v24M60 60V38q0-14 14-14h212q14 0 14 14v22M180 24v36"
+                strokeWidth="1.5"
+              />
+            </svg>
+            <div className="grid grid-cols-3 gap-2">
+              {products.slice(0, 3).map((p) => (
+                <Link
+                  key={p.id}
+                  href={"/products/" + p.slug}
+                  className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-1)] p-3 text-center"
+                >
+                  <ProductIcon
+                    slug={p.icon}
+                    imageUrl={p.logoUrl}
+                    className="!h-12 !w-12"
+                  />
+                  <p className="mt-3 text-xs font-semibold">
+                    {p.name.replace("DoCHEng ", "")}
+                  </p>
+                  <p className="mt-2 font-mono text-[9px] uppercase text-[var(--text-muted)]">
+                    {p.status.replaceAll("-", " ")}
+                  </p>
+                </Link>
               ))}
             </div>
-            <div className="flex flex-wrap gap-3">
-              <Button href="/pricing">Compare Plans</Button>
-              <Button href="/downloads" variant="ghost">
-                View Downloads
-              </Button>
-              <Button href="/products" variant="ghost">
-                View Product Catalog
-              </Button>
-            </div>
-          </Card>
-        </Reveal>
-      </Section>
-
-      <Section id="architecture" className="scroll-mt-24 py-10 sm:py-12">
-        <Reveal>
-          <div className="space-y-6">
-            <SectionEyebrow>Ecosystem Tree Architecture</SectionEyebrow>
-            <h2 className="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">{domainArchitecture.visionLine}</h2>
-            <ArchitectureStrip
-              parentDomain={domainArchitecture.parent}
-              subdomains={domainArchitecture.subdomains}
-              description="Concise preview: one parent brand root, specialized product subdomains, and coordinated runtime distribution."
-            />
-            <div className="flex flex-wrap gap-3">
-              <Button href="/ecosystem">Open Full Architecture Layer</Button>
-              <Button href="/downloads" variant="ghost">
-                Check Distribution Flow
-              </Button>
-              <Button href="/products" variant="ghost">
-                Inspect Product Branches
-              </Button>
+            <div className="mt-8 flex items-center justify-between border-t border-[var(--border-subtle)] pt-4">
+              <span className="eyebrow">The engineering tree</span>
+              <Link href="/ecosystem" className="text-link">
+                How it connects ↗
+              </Link>
             </div>
           </div>
-        </Reveal>
+        </div>
       </Section>
-
-      <Section id="roadmap" className="scroll-mt-24 py-10 sm:py-12">
-        <Reveal>
-          <Card className="space-y-6 bg-[var(--surface-0)]">
-            <div>
-              <SectionEyebrow>Future Vision</SectionEyebrow>
-              <h2 className="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">Roadmap phases show how the ecosystem scales with clarity.</h2>
-              <p className="mt-3 max-w-3xl text-sm leading-relaxed text-[var(--text-subtle)] sm:text-base">
-                DoCHEng grows through staged capability maturity across product branches, platform channels, and trust layers. See the full roadmap for near-term, mid-term, and long-term direction.
-              </p>
-            </div>
-            <div className="grid gap-3 sm:grid-cols-3">
-              {roadmapPhases.map((phase) => (
-                <div key={phase.id} className="rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-1)] p-4">
-                  <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[var(--text-muted)]">{phase.horizon}</p>
-                  <h3 className="mt-2 text-lg font-semibold tracking-tight">{phase.label}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-[var(--text-subtle)]">{phase.summary}</p>
-                </div>
+      <Section id="products" className="space-y-7 py-12">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="eyebrow">Built around real work</p>
+            <h2 className="mt-3 text-3xl font-semibold sm:text-4xl">
+              A tool for your next step.
+            </h2>
+          </div>
+          <Link href="/apps" className="text-link">
+            Browse the collection →
+          </Link>
+        </div>
+        <div className="grid gap-5 md:grid-cols-3">
+          {products
+            .filter((p) => p.category !== "Sister Projects")
+            .slice(0, 3)
+            .map((p) => {
+              const action = productAction(p);
+              return (
+                <Card key={p.id} className="market-card flex flex-col gap-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <ProductIcon slug={p.icon} imageUrl={p.logoUrl} />
+                    <span className="status-pill">
+                      {p.status.replaceAll("-", " ")}
+                    </span>
+                  </div>
+                  <h3 className="text-2xl font-semibold">{p.name}</h3>
+                  <p className="flex-1 text-sm leading-relaxed text-[var(--text-subtle)]">
+                    {p.summary}
+                  </p>
+                  <p className="text-xs text-[var(--text-muted)]">
+                    {p.platforms.join(" · ")} ·{" "}
+                    {p.pricing === "unconfirmed"
+                      ? "Pricing under review"
+                      : p.pricing}
+                  </p>
+                  <div className="flex flex-wrap gap-4">
+                    <a
+                      className="text-link"
+                      href={action.href}
+                      target={action.external ? "_blank" : undefined}
+                      rel={action.external ? "noopener noreferrer" : undefined}
+                    >
+                      {action.label} ↗
+                    </a>
+                    <Link className="text-link" href={"/products/" + p.slug}>
+                      Product details
+                    </Link>
+                  </div>
+                </Card>
+              );
+            })}
+        </div>
+      </Section>
+      <Section className="space-y-7 py-12">
+        <p className="eyebrow">Explore by purpose</p>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {categories
+            .filter((c) => c !== "Sister Projects")
+            .map((category, index) => (
+              <Link
+                key={category}
+                className="home-category"
+                href={"/apps?category=" + encodeURIComponent(category)}
+              >
+                <span className="font-mono text-xs text-[var(--text-muted)]">
+                  0{index + 1}
+                </span>
+                <h2 className="text-xl font-semibold">{category}</h2>
+                <span className="text-link">Explore →</span>
+              </Link>
+            ))}
+        </div>
+      </Section>
+      <Section className="py-12">
+        <Card className="grid items-center gap-8 lg:grid-cols-2">
+          <div>
+            <p className="eyebrow">Free engineering workbench</p>
+            <h2 className="mt-4 text-3xl font-semibold sm:text-4xl">
+              Make the first calculation count.
+            </h2>
+            <p className="my-5 leading-relaxed text-[var(--text-subtle)]">
+              From unit conversions to pump power and mass balances: useful
+              screening tools with equations, units, assumptions and references.
+            </p>
+            <Link className="action-button" href="/tools">
+              Explore all {engineeringTools.length + 1} tools
+            </Link>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {engineeringTools
+              .filter((t) =>
+                [
+                  "pump-power",
+                  "pipe-velocity",
+                  "tank-volume",
+                  "hydraulic-retention-time",
+                ].includes(t.slug),
+              )
+              .map((t) => (
+                <Link
+                  key={t.slug}
+                  className="home-category"
+                  href={"/tools/" + t.slug}
+                >
+                  <p className="font-semibold">{t.name}</p>
+                  <p className="text-xs text-[var(--text-subtle)]">
+                    {t.equation}
+                  </p>
+                </Link>
               ))}
-            </div>
-            <div className="flex flex-wrap gap-3">
-              <Button href="/roadmap">Open Full Roadmap</Button>
-              <Button href="/ecosystem" variant="ghost">
-                View Architecture
-              </Button>
-            </div>
-          </Card>
-        </Reveal>
+          </div>
+        </Card>
       </Section>
-
-      <Section id="contact" className="scroll-mt-24 pt-10 sm:pt-12">
-        <Reveal>
-          <Card className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
-            <div>
-              <p className="font-mono text-xs uppercase tracking-[0.18em] text-[var(--accent-secondary)]">Next Step</p>
-              <h2 className="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">Choose your branch and get the right support for every step.</h2>
-            </div>
-            <div className="flex flex-wrap gap-3">
-              <Button href="/#products">Explore Apps</Button>
-              <Button href="/support" variant="ghost">
-                Open Support Center
-              </Button>
-            </div>
-          </Card>
-        </Reveal>
+      <Section className="py-12">
+        <ProductFinder products={products} />
+      </Section>
+      <Section id="architecture" className="py-12">
+        <div className="grid gap-8 lg:grid-cols-2">
+          <div>
+            <p className="eyebrow">One root. Independent branches.</p>
+            <h2 className="mt-4 text-3xl font-semibold sm:text-4xl">
+              Connected by purpose.
+              <br />
+              Clear about availability.
+            </h2>
+            <p className="my-5 leading-relaxed text-[var(--text-subtle)]">
+              DoCHEng brings specialised applications together under one
+              engineering brand. Each product keeps its own data permissions and
+              release path. The hub helps you find the right starting point.
+            </p>
+            <Link className="text-link" href="/ecosystem">
+              Explore the ecosystem →
+            </Link>
+          </div>
+          <div className="space-y-4">
+            <Card>
+              <h3 className="text-lg font-semibold">Web applications</h3>
+              <p className="mt-2 text-sm text-[var(--text-subtle)]">
+                Verified entry pages are linked directly. Beta status reflects
+                the remaining product acceptance work.
+              </p>
+            </Card>
+            <Card>
+              <h3 className="text-lg font-semibold">Desktop and Android</h3>
+              <p className="my-2 text-sm text-[var(--text-subtle)]">
+                Installers appear only when release files, compatibility and
+                checksums have been verified. No core DoCHEng native installers
+                are currently verified.
+              </p>
+              <Link className="text-link" href="/downloads">
+                Check the download centre →
+              </Link>
+            </Card>
+          </div>
+        </div>
+      </Section>
+      <Section id="pricing" className="py-12">
+        <Card className="grid gap-6 sm:grid-cols-[1.5fr_1fr]">
+          <div>
+            <p className="eyebrow">Straightforward access</p>
+            <h2 className="mt-4 text-3xl font-semibold">
+              Explore before you commit.
+            </h2>
+            <p className="mt-4 leading-relaxed text-[var(--text-subtle)]">
+              The engineering workbench is free. App plan amounts are still
+              proposals while commercial configuration is reviewed. Paid
+              checkout is not activated.
+            </p>
+          </div>
+          <div className="flex flex-col items-start justify-center gap-4">
+            <Link className="action-button" href="/pricing">
+              Review plan proposals
+            </Link>
+            <Link className="text-link" href="/support#contact-form">
+              Discuss team or enterprise needs
+            </Link>
+          </div>
+        </Card>
+      </Section>
+      <Section className="py-12">
+        <div className="grid gap-5 md:grid-cols-3">
+          {[
+            [
+              "Documentation",
+              "Setup, technical context and practical guidance.",
+              "/docs",
+            ],
+            [
+              "Support",
+              "Send an enquiry and keep a persistent ticket reference.",
+              "/support",
+            ],
+            [
+              "Roadmap and updates",
+              "Follow release direction and the work still ahead.",
+              "/roadmap",
+            ],
+          ].map(([title, summary, href]) => (
+            <Card key={href} className="space-y-4">
+              <h2 className="text-xl font-semibold">{title}</h2>
+              <p className="text-sm text-[var(--text-subtle)]">{summary}</p>
+              <Link className="text-link" href={href}>
+                Explore →
+              </Link>
+            </Card>
+          ))}
+        </div>
+      </Section>
+      <Section id="contact" className="pb-20 pt-12">
+        <Card className="space-y-6">
+          <div>
+            <p className="eyebrow">Stay curious</p>
+            <h2 className="mt-4 text-3xl font-semibold">
+              Be part of what comes next.
+            </h2>
+            <p className="mt-3 text-[var(--text-subtle)]">
+              Choose product updates or early-access news. Confirm your email
+              before announcements begin.
+            </p>
+          </div>
+          <Newsletter />
+        </Card>
       </Section>
     </>
   );

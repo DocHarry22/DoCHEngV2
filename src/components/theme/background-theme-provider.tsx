@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useHydrated } from "@/lib/use-hydrated";
 import { useTheme } from "next-themes";
 
 import {
@@ -10,7 +11,7 @@ import {
   getBackgroundThemeVariables,
   isBackgroundThemeId,
   type BackgroundMode,
-  type BackgroundThemeId
+  type BackgroundThemeId,
 } from "@/lib/background-themes";
 
 interface BackgroundThemeContextValue {
@@ -20,7 +21,17 @@ interface BackgroundThemeContextValue {
   mounted: boolean;
 }
 
-const BackgroundThemeContext = React.createContext<BackgroundThemeContextValue | null>(null);
+const BackgroundThemeContext =
+  React.createContext<BackgroundThemeContextValue | null>(null);
+
+const subscribeTheme = (listener: () => void) => {
+  window.addEventListener("storage", listener);
+  window.addEventListener("docheng-theme-change", listener);
+  return () => {
+    window.removeEventListener("storage", listener);
+    window.removeEventListener("docheng-theme-change", listener);
+  };
+};
 
 function inferMode(resolvedTheme: string | undefined): BackgroundMode {
   return resolvedTheme === "dark" ? "dark" : "light";
@@ -58,7 +69,9 @@ function readStoredBackgroundTheme(): BackgroundThemeId {
 function applyThemeVariables(themeId: BackgroundThemeId, mode: BackgroundMode) {
   const root = document.documentElement;
   const nextVars = getBackgroundThemeVariables(themeId, mode);
-  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const reducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
 
   root.setAttribute("data-background-theme", themeId);
 
@@ -86,16 +99,18 @@ function applyThemeVariables(themeId: BackgroundThemeId, mode: BackgroundMode) {
   }
 }
 
-export function BackgroundThemeProvider({ children }: { children: React.ReactNode }) {
+export function BackgroundThemeProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const { resolvedTheme } = useTheme();
-  const [themeId, setThemeIdState] = React.useState<BackgroundThemeId>(defaultBackgroundThemeId);
-  const [mounted, setMounted] = React.useState(false);
-
-  React.useEffect(() => {
-    const stored = readStoredBackgroundTheme();
-    setThemeIdState(stored);
-    setMounted(true);
-  }, []);
+  const mounted = useHydrated();
+  const themeId = React.useSyncExternalStore(
+    subscribeTheme,
+    readStoredBackgroundTheme,
+    () => defaultBackgroundThemeId,
+  );
 
   React.useEffect(() => {
     if (!mounted) {
@@ -104,11 +119,11 @@ export function BackgroundThemeProvider({ children }: { children: React.ReactNod
 
     const mode = inferMode(resolvedTheme);
     applyThemeVariables(themeId, mode);
-    window.localStorage.setItem(backgroundThemeStorageKey, themeId);
   }, [mounted, resolvedTheme, themeId]);
 
   const setThemeId = React.useCallback((nextThemeId: BackgroundThemeId) => {
-    setThemeIdState(nextThemeId);
+    window.localStorage.setItem(backgroundThemeStorageKey, nextThemeId);
+    window.dispatchEvent(new Event("docheng-theme-change"));
   }, []);
 
   const value = React.useMemo<BackgroundThemeContextValue>(
@@ -116,18 +131,24 @@ export function BackgroundThemeProvider({ children }: { children: React.ReactNod
       themeId,
       setThemeId,
       presets: backgroundThemePresets,
-      mounted
+      mounted,
     }),
-    [mounted, setThemeId, themeId]
+    [mounted, setThemeId, themeId],
   );
 
-  return <BackgroundThemeContext.Provider value={value}>{children}</BackgroundThemeContext.Provider>;
+  return (
+    <BackgroundThemeContext.Provider value={value}>
+      {children}
+    </BackgroundThemeContext.Provider>
+  );
 }
 
 export function useBackgroundTheme() {
   const context = React.useContext(BackgroundThemeContext);
   if (!context) {
-    throw new Error("useBackgroundTheme must be used inside BackgroundThemeProvider");
+    throw new Error(
+      "useBackgroundTheme must be used inside BackgroundThemeProvider",
+    );
   }
   return context;
 }

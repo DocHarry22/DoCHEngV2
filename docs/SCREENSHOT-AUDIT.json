@@ -1,0 +1,38 @@
+[
+  {
+    "slug": "desk",
+    "url": "https://docheng-desk2.vercel.app/login",
+    "title": "DoCHEng Desk V2",
+    "caption": "Public Desk v2 sign-in entry; no customer data or authenticated workspace is shown.",
+    "checkedAt": "2026-10-18T22:10:03.701Z",
+    "note": "Retained the successful first capture; a later refresh timed out waiting for a heading this login page does not contain."
+  },
+  {
+    "slug": "resume",
+    "url": "https://resume.docheng.co.za/resume-scanner/",
+    "title": "Resume Scanner - AI-Powered Resume Analysis",
+    "caption": "Public resume-scanning interface; uploaded-document analysis was not performed.",
+    "checkedAt": "2026-10-18T22:13:31.180Z"
+  },
+  {
+    "slug": "apologia-sancta",
+    "url": "https://sandybrown-bear-488955.hostingersite.com/",
+    "title": "Apologia Sancta | Catholic Learning and Live Quiz Competition",
+    "caption": "Public Apologia Sancta landing page; an accessible previous deployment, separate from the latest failed build.",
+    "checkedAt": "2026-10-18T22:13:33.965Z"
+  },
+  {
+    "slug": "thasi-etoile",
+    "url": "https://lightsalmon-kingfisher-947477.hostingersite.com/",
+    "title": "Thasi Etoile | Shine in Style",
+    "caption": "Public Thasi Étoile storefront; no purchase or customer account was created.",
+    "checkedAt": "2026-10-18T22:13:40.581Z"
+  },
+  {
+    "slug": "water-nest",
+    "url": "https://waternest.co.za/",
+    "title": "Water Treatment Solutions in South Africa | Water Nest",
+    "caption": "Public Water Nest storefront; no transaction or customer data is shown.",
+    "checkedAt": "2026-10-18T22:13:44.256Z"
+  }
+]

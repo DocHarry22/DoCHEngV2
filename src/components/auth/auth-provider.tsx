@@ -1,11 +1,22 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import type { ReactNode } from "react";
 
 import { createAuthAdapter } from "@/lib/auth/adapter";
 import { GUEST_SESSION } from "@/lib/auth/mock-auth";
-import type { AppSession, AuthCredentialInput, AuthResult } from "@/lib/auth/types";
+import type {
+  AppSession,
+  AuthCredentialInput,
+  AuthResult,
+} from "@/lib/auth/types";
 
 type AuthContextValue = {
   session: AppSession;
@@ -13,7 +24,8 @@ type AuthContextValue = {
   isLoading: boolean;
   signIn: (credentials: AuthCredentialInput) => Promise<AuthResult>;
   signUp: (credentials: AuthCredentialInput) => Promise<AuthResult>;
-  signOut: () => void;
+  signOut: () => Promise<void>;
+  refreshSession: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextValue>({
@@ -22,7 +34,8 @@ const AuthContext = createContext<AuthContextValue>({
   isLoading: false,
   signIn: async () => ({ ok: false, message: "Auth provider unavailable." }),
   signUp: async () => ({ ok: false, message: "Auth provider unavailable." }),
-  signOut: () => {}
+  signOut: async () => {},
+  refreshSession: async () => {},
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -31,32 +44,56 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    setSession(adapter.readSession());
-    setIsLoading(false);
-  }, [adapter]);
-
-  const signIn = useCallback(async (credentials: AuthCredentialInput): Promise<AuthResult> => {
-    const { result, session: nextSession } = await adapter.signIn(credentials);
-
-    if (result.ok) {
-      setSession(nextSession);
+    let cancelled = false;
+    try {
+      window.localStorage.removeItem("dochengv2.session.v1");
+    } catch {
+      /* Storage availability does not control server authentication. */
     }
-
-    return result;
+    adapter.readSession().then((value) => {
+      if (!cancelled) {
+        setSession(value);
+        setIsLoading(false);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
   }, [adapter]);
 
-  const signUp = useCallback(async (credentials: AuthCredentialInput): Promise<AuthResult> => {
-    const { result, session: nextSession } = await adapter.signUp(credentials);
+  const signIn = useCallback(
+    async (credentials: AuthCredentialInput): Promise<AuthResult> => {
+      const { result, session: nextSession } =
+        await adapter.signIn(credentials);
 
-    if (result.ok) {
-      setSession(nextSession);
-    }
+      if (result.ok) {
+        setSession(nextSession);
+      }
 
-    return result;
+      return result;
+    },
+    [adapter],
+  );
+
+  const signUp = useCallback(
+    async (credentials: AuthCredentialInput): Promise<AuthResult> => {
+      const { result, session: nextSession } =
+        await adapter.signUp(credentials);
+
+      if (result.ok) {
+        setSession(nextSession);
+      }
+
+      return result;
+    },
+    [adapter],
+  );
+
+  const signOut = useCallback(async () => {
+    setSession(await adapter.signOut());
   }, [adapter]);
-
-  const signOut = useCallback(() => {
-    setSession(adapter.signOut());
+  const refreshSession = useCallback(async () => {
+    setSession(await adapter.readSession());
   }, [adapter]);
 
   const value = useMemo<AuthContextValue>(
@@ -66,9 +103,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isLoading,
       signIn,
       signUp,
-      signOut
+      signOut,
+      refreshSession,
     }),
-    [session, isLoading, signIn, signOut, signUp]
+    [session, isLoading, signIn, signOut, signUp, refreshSession],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
