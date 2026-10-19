@@ -2,6 +2,8 @@
 
 ## Product editing
 
+Administration opens on an overview with server-calculated totals, activity and actionable alerts. See [Administrator dashboard](ADMIN-DASHBOARD.md) for navigation, refresh behaviour and list limits.
+
 The administrator dashboard includes a guided product editor with live preview, draft saving, attached image and release uploads, launch verification and explicit publication. See [Guided product editor](GUIDED-PRODUCT-EDITOR.md) for the owner workflow. Existing administrator access checks, private draft media and revision conflict checks apply to all operations.
 
 ## Existing deployment

@@ -6,6 +6,8 @@ import { baseCatalogue } from "@/lib/catalogue";
 import { candidateProducts } from "@/lib/server/candidates";
 import { validateProduct } from "@/lib/server/catalogue";
 import { probeUrl } from "@/lib/server/probe-url";
+import { adminOverview } from "@/lib/server/admin-overview";
+import type { AdminData } from "@/lib/admin";
 import {
   assertSameOrigin,
   jsonBody,
@@ -21,21 +23,29 @@ export const dynamic = "force-dynamic";
 export async function GET() {
   try {
     await requireUser(true);
+    const drafts = rows<AdminData["drafts"][number]>(
+      "SELECT * FROM product_drafts",
+    );
     return apiResponse({
+      ...adminOverview(drafts),
       products: [
         ...baseCatalogue,
         ...candidateProducts.filter(
           (p) => !baseCatalogue.some((b) => b.slug === p.slug),
         ),
       ],
-      drafts: rows("SELECT * FROM product_drafts"),
-      tickets: rows("SELECT * FROM tickets ORDER BY created_at DESC LIMIT 100"),
+      drafts,
+      tickets: rows(
+        "SELECT * FROM tickets ORDER BY CASE WHEN status IN ('open','in-progress') THEN 0 ELSE 1 END,created_at DESC LIMIT 100",
+      ),
       users: rows(
         "SELECT id,email,name,role,verified,disabled FROM users ORDER BY created_at DESC LIMIT 100",
       ),
-      audit: rows("SELECT * FROM audit_log ORDER BY created_at DESC LIMIT 100"),
+      audit: rows(
+        "SELECT a.*,u.name AS actor_name FROM audit_log a LEFT JOIN users u ON u.id=a.actor_id ORDER BY a.created_at DESC LIMIT 100",
+      ),
       mail: rows(
-        "SELECT id,status,attempts,created_at FROM mail_outbox ORDER BY created_at DESC LIMIT 100",
+        "SELECT id,status,attempts,created_at FROM mail_outbox ORDER BY CASE WHEN status IN ('queued','sending') THEN 0 ELSE 1 END,created_at DESC LIMIT 100",
       ),
       metrics: rows(
         "SELECT day,path,campaign,views FROM metrics_daily ORDER BY day DESC,views DESC LIMIT 100",

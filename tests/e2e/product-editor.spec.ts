@@ -34,7 +34,7 @@ test("guided editor saves, attaches media and releases, previews and explicitly 
   page.on("console", (message) => {
     if (message.type() === "error") errors.push(message.text());
   });
-  await page.goto("/admin");
+  await page.goto("/admin#products");
   await expect(
     page.getByRole("heading", { name: "Guided product editor" }),
   ).toBeVisible();
@@ -166,7 +166,7 @@ test("editor protects unsaved changes and rejects stale saves without discarding
   page,
   context,
 }) => {
-  await page.goto("/admin");
+  await page.goto("/admin#products");
   await page
     .getByRole("combobox", { name: "Choose a product", exact: true })
     .selectOption("desk");

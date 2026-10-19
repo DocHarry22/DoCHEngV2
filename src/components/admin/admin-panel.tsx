@@ -1,60 +1,100 @@
 "use client";
-import { useEffect, useState } from "react";
-import { Card } from "@/components/ui/card";
-import type { CatalogueProduct } from "@/lib/catalogue";
-import {
-  GuidedProductEditor,
-  type ProductDraft,
-} from "./guided-product-editor";
-import { CustomerOperations } from "./customer-operations";
-import { AggregateReport } from "./aggregate-report";
-import { RepositoryReferences } from "./repository-references";
-type Row = Record<string, string | number | null>;
-type AdminData = {
-  products: CatalogueProduct[];
-  drafts: ProductDraft[];
-  tickets: Row[];
-  users: Row[];
-  audit: Row[];
-  mail: Row[];
-  metrics: Row[];
-  repositories: Row[];
-  licences: Row[];
-};
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { adminSection, adminTime, type AdminData } from "@/lib/admin";
+import { AdminNavigation } from "./admin-navigation";
+import { AdminWorkspaces } from "./admin-workspaces";
+function subscribe(onChange: () => void) {
+  window.addEventListener("hashchange", onChange);
+  return () => window.removeEventListener("hashchange", onChange);
+}
+const snapshot = () => adminSection(window.location.hash);
+const serverSnapshot = () => "overview" as const;
+function failure(status: number) {
+  return status === 401 || status === 403
+    ? "Administrator access required. Sign in with your verified administrator account."
+    : "Unable to load administrator data. Please retry.";
+}
 export function AdminPanel() {
+  const active = useSyncExternalStore(subscribe, snapshot, serverSnapshot);
+  const previous = useRef(active);
   const [data, setData] = useState<AdminData>();
+  const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [busy, setBusy] = useState(false);
-  async function reload(): Promise<AdminData> {
-    const r = await fetch("/api/admin", { cache: "no-store" });
-    if (!r.ok) throw new Error("Administrator access required.");
-    const latest = (await r.json()) as AdminData;
-    setData(latest);
-    return latest;
-  }
+  const [refreshing, setRefreshing] = useState(true);
   useEffect(() => {
-    fetch("/api/admin", { cache: "no-store" })
-      .then(async (r) => {
-        if (!r.ok) throw new Error("Administrator access required.");
-        return r.json();
+    const controller = new AbortController();
+    fetch("/api/admin", { cache: "no-store", signal: controller.signal })
+      .then(async (response) => {
+        if (!response.ok) throw new Error(failure(response.status));
+        setData(await response.json());
       })
-      .then(setData)
-      .catch((e) => setNotice(e.message));
+      .catch((caught) => {
+        if (!controller.signal.aborted)
+          setError(
+            caught instanceof Error
+              ? caught.message
+              : "Unable to load administrator data.",
+          );
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setRefreshing(false);
+      });
+    return () => controller.abort();
   }, []);
+  useEffect(() => {
+    if (previous.current !== active && data) {
+      const panel = document.getElementById(active);
+      panel?.focus({ preventScroll: true });
+      panel?.scrollIntoView({ block: "start" });
+    }
+    previous.current = active;
+  }, [active, data]);
+  async function reload(): Promise<AdminData> {
+    setRefreshing(true);
+    setError("");
+    try {
+      const response = await fetch("/api/admin", { cache: "no-store" });
+      if (!response.ok) {
+        if (response.status === 401 || response.status === 403)
+          setData(undefined);
+        throw new Error(failure(response.status));
+      }
+      const latest = (await response.json()) as AdminData;
+      setData(latest);
+      return latest;
+    } catch (caught) {
+      const message =
+        caught instanceof Error
+          ? caught.message
+          : "Dashboard refresh failed. Please retry.";
+      setError(message);
+      throw new Error(message);
+    } finally {
+      setRefreshing(false);
+    }
+  }
   async function send(body: object) {
     setBusy(true);
     try {
-      const r = await fetch("/api/admin", {
+      const response = await fetch("/api/admin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
-      const value = await r.json();
-      setNotice(value.message ?? JSON.stringify(value));
-      if (r.ok) {
-        await reload();
+      const value = await response.json();
+      setNotice(value.message ?? "Administrator operation completed.");
+      if (response.ok) {
+        try {
+          await reload();
+        } catch {
+          setNotice(
+            (value.message ?? "Changes saved.") +
+              " Refresh the dashboard to see the latest data.",
+          );
+        }
       }
-      return r.ok;
+      return response.ok;
     } catch {
       setNotice("Administrator operation failed. Please retry.");
       return false;
@@ -63,180 +103,64 @@ export function AdminPanel() {
     }
   }
   return (
-    <div className="space-y-8">
-      {notice ? (
-        <p role="status" className="notice">
-          {notice}
-        </p>
-      ) : null}
-      {data ? (
-        <GuidedProductEditor
-          products={data.products}
-          drafts={data.drafts}
-          onReload={reload}
-        />
-      ) : (
-        <p>Loading administrator tools…</p>
-      )}
-      <Card className="space-y-4">
-        <h2 className="text-2xl font-semibold">Support enquiries</h2>
-        {data?.tickets.map((t) => (
-          <details
-            key={String(t.id)}
-            className="rounded-xl border border-[var(--border-subtle)] p-4"
+    <div className="grid min-w-0 items-start gap-6 lg:grid-cols-[13rem_minmax(0,1fr)]">
+      <AdminNavigation active={active} summary={data?.summary} />
+      <div className="min-w-0 space-y-5">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <p className="text-xs text-[var(--text-subtle)]">
+            {data
+              ? "Updated " + adminTime(Date.parse(data.updatedAt))
+              : "Administrator workspace"}
+            {data && refreshing ? " · Refreshing…" : ""}
+          </p>
+          <button
+            type="button"
+            className="text-link text-sm"
+            disabled={refreshing || busy}
+            onClick={() => void reload().catch(() => {})}
           >
-            <summary className="cursor-pointer">
-              {t.id} · {t.status} · {t.enquiry_type}
-            </summary>
-            <p className="my-3 text-sm">
-              {t.name} · {t.email} · {t.product}
-            </p>
-            <p className="whitespace-pre-wrap text-sm">{t.message}</p>
-            <form
-              className="mt-4 space-y-3"
-              onSubmit={(e) => {
-                e.preventDefault();
-                const f = new FormData(e.currentTarget);
-                void send({
-                  action: "reply",
-                  ticket: t.id,
-                  message: f.get("reply"),
-                  close: f.get("close") === "on",
-                });
-              }}
-            >
-              <label className="block text-sm">
-                Reply
-                <textarea
-                  name="reply"
-                  className="field mt-2"
-                  required
-                  minLength={10}
-                  maxLength={8000}
-                />
-              </label>
-              <label className="flex gap-2 text-sm">
-                <input type="checkbox" name="close" />
-                Close after replying
-              </label>
-              <button disabled={busy} className="action-button">
-                Save reply and queue email
-              </button>
-            </form>
-          </details>
-        ))}
-        {!data?.tickets.length ? <p>No enquiries.</p> : null}
-      </Card>
-      <Card className="space-y-4">
-        <h2 className="text-2xl font-semibold">Customer access</h2>
-        <form
-          className="grid gap-3 sm:grid-cols-2"
-          onSubmit={(e) => {
-            e.preventDefault();
-            const values = Object.fromEntries(new FormData(e.currentTarget));
-            void send({ ...values, action: "entitlement" });
-          }}
-        >
-          <label className="text-sm">
-            User
-            <select required className="field mt-2" name="userId">
-              {data?.users.map((u) => (
-                <option key={String(u.id)} value={String(u.id)}>
-                  {u.email}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="text-sm">
-            Product
-            <select className="field mt-2" name="slug">
-              {data?.products.map((p) => (
-                <option key={p.id} value={p.slug}>
-                  {p.name}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="text-sm">
-            Access
-            <select className="field mt-2" name="state">
-              <option value="none">No access</option>
-              <option value="trial">Trial</option>
-              <option value="active">Manual grant</option>
-            </select>
-          </label>
-          <label className="text-sm">
-            Expiry (optional)
-            <input
-              className="field mt-2"
-              type="datetime-local"
-              name="expiresAt"
-            />
-          </label>
-          <button className="action-button" disabled={busy}>
-            Update access
+            {refreshing ? "Refreshing…" : "Refresh dashboard"}
           </button>
-        </form>
-      </Card>
-      <Card className="space-y-4">
-        <h2 className="text-2xl font-semibold">Email delivery</h2>
-        <p>
-          {data?.mail.filter((m) => m.status === "queued").length ?? 0} messages
-          queued. Missing provider credentials leave messages queued.
-        </p>
-        <button
-          className="action-button"
-          disabled={busy}
-          onClick={() => send({ action: "flush-mail" })}
-        >
-          Retry queued mail
-        </button>
-      </Card>
-      <Card className="overflow-x-auto">
-        <h2 className="mb-4 text-2xl font-semibold">Audit trail</h2>
-        <table className="w-full text-left text-xs">
-          <thead>
-            <tr>
-              <th className="p-2">Date</th>
-              <th className="p-2">Action</th>
-              <th className="p-2">Resource</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data?.audit.map((a) => (
-              <tr key={String(a.id)}>
-                <td className="p-2">
-                  {new Date(Number(a.created_at)).toISOString()}
-                </td>
-                <td className="p-2">{a.action}</td>
-                <td className="p-2">{a.resource}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </Card>
-      <Card>
-        <CustomerOperations
-          users={data?.users ?? []}
-          licences={data?.licences ?? []}
-          send={send}
-        />
-      </Card>
-      <Card>
-        <AggregateReport metrics={data?.metrics ?? []} />
-      </Card>
-      <Card>
-        <RepositoryReferences
-          slugs={Array.from(
-            new Set([
-              ...(data?.products.map((p) => p.slug) ?? []),
-              ...(data?.drafts.map((p) => String(p.slug)) ?? []),
-            ]),
-          )}
-          rows={data?.repositories ?? []}
-          send={send}
-        />
-      </Card>
+        </div>
+        {error ? (
+          <div role="alert" className="notice space-y-2">
+            <p>{error}</p>
+            {data ? (
+              <p className="text-sm">
+                Showing the last successfully loaded data.
+              </p>
+            ) : (
+              <a className="text-link" href="/signin?next=%2Fadmin">
+                Sign in
+              </a>
+            )}
+            <button
+              type="button"
+              className="text-link ml-4"
+              disabled={refreshing}
+              onClick={() => void reload().catch(() => {})}
+            >
+              Retry loading dashboard
+            </button>
+          </div>
+        ) : null}
+        {notice ? (
+          <p role="status" className="notice">
+            {notice}
+          </p>
+        ) : null}
+        {data ? (
+          <AdminWorkspaces
+            data={data}
+            active={active}
+            busy={busy}
+            send={send}
+            reload={reload}
+          />
+        ) : !error ? (
+          <p role="status">Loading administrator tools…</p>
+        ) : null}
+      </div>
     </div>
   );
 }

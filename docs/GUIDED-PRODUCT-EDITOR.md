@@ -1,6 +1,6 @@
 # Guided product editor
 
-Open `/admin` with a verified administrator account. Choose an application under **Guided product editor**, or select **Add an application**.
+Open `/admin` with a verified administrator account and choose **Products** in the administrator navigation. Choose an application under **Guided product editor**, or select **Add an application**.
 
 1. Complete the name, descriptions, audience, key features, category and supported platforms. The new page address is suggested from the name and becomes fixed after the first save. New applications start as internal drafts.
 2. Choose release status and visibility. Add a pricing description, documentation and support links. Pricing is descriptive; publication does not activate payments.
