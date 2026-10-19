@@ -178,7 +178,7 @@ test("section links support history and preserve product edits across navigation
     .fill("Unsaved navigation QA");
   await navigate(page, "Customers");
   await expect(
-    page.getByRole("heading", { name: "Customer access" }),
+    page.getByRole("heading", { name: "Customer directory" }),
   ).toBeVisible();
   await page.goBack();
   await expect(page.getByLabel("App name", { exact: true })).toHaveValue(

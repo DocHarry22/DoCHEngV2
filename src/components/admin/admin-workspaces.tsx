@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import type { AdminData, AdminSection } from "@/lib/admin";
 import { adminActionLabel, adminTime } from "@/lib/admin";
 import { GuidedProductEditor } from "./guided-product-editor";
-import { CustomerOperations } from "./customer-operations";
+import { CustomerDirectory } from "./customer-directory";
 import { AggregateReport } from "./aggregate-report";
 import { RepositoryReferences } from "./repository-references";
 import { AdminOverview, AdminReleases } from "./admin-overview";
@@ -60,65 +60,12 @@ export function AdminWorkspaces({
         hidden={active !== "customers"}
         className="min-w-0 scroll-mt-28 space-y-6"
       >
-        {" "}
-        <Card className="space-y-4">
-          <h2 className="text-2xl font-semibold">Customer access</h2>
-          <form
-            className="grid gap-3 sm:grid-cols-2"
-            onSubmit={(e) => {
-              e.preventDefault();
-              const values = Object.fromEntries(new FormData(e.currentTarget));
-              void send({ ...values, action: "entitlement" });
-            }}
-          >
-            <label className="text-sm">
-              User
-              <select required className="field mt-2" name="userId">
-                {data?.users.map((u) => (
-                  <option key={String(u.id)} value={String(u.id)}>
-                    {u.email}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="text-sm">
-              Product
-              <select className="field mt-2" name="slug">
-                {data?.products.map((p) => (
-                  <option key={p.id} value={p.slug}>
-                    {p.name}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="text-sm">
-              Access
-              <select className="field mt-2" name="state">
-                <option value="none">No access</option>
-                <option value="trial">Trial</option>
-                <option value="active">Manual grant</option>
-              </select>
-            </label>
-            <label className="text-sm">
-              Expiry (optional)
-              <input
-                className="field mt-2"
-                type="datetime-local"
-                name="expiresAt"
-              />
-            </label>
-            <button className="action-button" disabled={busy}>
-              Update access
-            </button>
-          </form>
-        </Card>
-        <Card>
-          <CustomerOperations
-            users={data?.users ?? []}
-            licences={data?.licences ?? []}
-            send={send}
-          />
-        </Card>
+        <CustomerDirectory
+          active={active === "customers"}
+          refreshKey={data.updatedAt}
+          products={data.products}
+          onChanged={reload}
+        />
       </section>
       <section
         id="support"

@@ -106,6 +106,11 @@ export function database() {
       fingerprint_hash TEXT NOT NULL, name TEXT NOT NULL, created_at INTEGER NOT NULL, UNIQUE(licence_id,fingerprint_hash)
     );
     CREATE TABLE IF NOT EXISTS licence_products (licence_id TEXT NOT NULL REFERENCES licences(id) ON DELETE CASCADE,product_slug TEXT NOT NULL,PRIMARY KEY(licence_id,product_slug));
+    CREATE INDEX IF NOT EXISTS customer_directory_order ON users(created_at DESC,id DESC);
+    CREATE INDEX IF NOT EXISTS customer_licences ON licences(user_id);
+    CREATE INDEX IF NOT EXISTS customer_activity_actor ON audit_log(actor_id,created_at DESC);
+    CREATE INDEX IF NOT EXISTS customer_activity_resource ON audit_log(resource,created_at DESC);
+    CREATE INDEX IF NOT EXISTS ticket_message_order ON ticket_messages(ticket_id,created_at,id);
   `);
   return connection;
 }
