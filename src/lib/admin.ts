@@ -22,7 +22,7 @@ export const adminSections: { id: AdminSection; label: string }[] = [
   { id: "repositories", label: "Repositories" },
 ];
 export function adminSection(hash: string): AdminSection {
-  const value = hash.replace(/^#/, "");
+  const value = hash.replace(/^#/, "").split("/")[0];
   return adminSections.find((s) => s.id === value)?.id ?? "overview";
 }
 export type AdminSummary = {
@@ -74,6 +74,9 @@ const actions: Record<string, string> = {
   "release.uploaded": "Release uploaded",
   "media.uploaded": "Image uploaded",
   "account.created": "Account created",
+  "account.profile": "Profile updated",
+  "sessions.revoked": "Sessions ended",
+  "device.revoked": "Device removed",
   "account.verify": "Email verified",
   "account.reset": "Password reset",
   "admin.bootstrapped": "Initial administrator activated",
