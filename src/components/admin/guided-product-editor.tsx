@@ -197,7 +197,7 @@ export function GuidedProductEditor({
         </p>
       </div>
       <div className="flex flex-wrap items-end gap-3">
-        <label className="min-w-0 flex-1 text-sm">
+        <label className="min-w-0 basis-full text-sm sm:flex-1 sm:basis-64">
           Choose a product
           <select
             className="field mt-2 w-full"

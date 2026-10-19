@@ -38,6 +38,10 @@ test("guided editor saves, attaches media and releases, previews and explicitly 
   await expect(
     page.getByRole("heading", { name: "Guided product editor" }),
   ).toBeVisible();
+  const chooser = await page
+    .getByRole("combobox", { name: "Choose a product", exact: true })
+    .boundingBox();
+  expect(chooser?.width).toBeGreaterThan(200);
   await page.getByRole("button", { name: "Add an application" }).click();
   const name = "QA editor " + randomUUID().slice(0, 8);
   await page.getByLabel("App name", { exact: true }).fill(name);
