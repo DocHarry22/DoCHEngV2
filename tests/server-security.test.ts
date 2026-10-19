@@ -311,13 +311,14 @@ it("keeps approved publications stable while drafts change and rejects stale rev
     support: "/support?product=qa-lab#contact-form",
     privateRepository: "https://example.test/private-source",
   };
-  expect(
-    (
-      await adminPost(
-        request("/api/admin", { action: "save-product", product }),
-      )
-    ).status,
-  ).toBe(200);
+  const saved = await adminPost(
+    request("/api/admin", { action: "save-product", product }),
+  );
+  expect(saved.status).toBe(200);
+  const savedData = await saved.json();
+  expect(savedData.revision).toBe(1);
+  expect(savedData.product.slug).toBe("qa-lab");
+  expect(savedData.product).not.toHaveProperty("privateRepository");
   expect(publishedCatalogue().some((p) => p.slug === "qa-lab")).toBe(false);
   expect(
     (
@@ -372,6 +373,84 @@ it("keeps approved publications stable while drafts change and rejects stale rev
   ).toBe(200);
   expect(publishedCatalogue().some((p) => p.slug === "qa-lab")).toBe(false);
 });
+it("keeps launch verification tied to the saved revision, including changes during the probe", async () => {
+  const owner = await register(
+    "owner@example.com",
+    "Owner",
+    "a long owner password here",
+  );
+  run("UPDATE users SET role='admin',verified=1 WHERE id=?", owner);
+  jar.set(SESSION_COOKIE, createSession(owner));
+  const { baseCatalogue } = await import("@/lib/catalogue");
+  const product = {
+    ...baseCatalogue[0],
+    slug: "verify-qa",
+    status: "planned",
+    launch: undefined,
+  };
+  await adminPost(request("/api/admin", { action: "save-product", product }));
+  const probe = await import("@/lib/server/probe-url");
+  const spy = vi
+    .spyOn(probe, "probeUrl")
+    .mockResolvedValue({
+      url: "https://example.com/",
+      checkedAt: new Date().toISOString(),
+      scope: "Entry page",
+    });
+  try {
+    expect(
+      (
+        await adminPost(
+          request("/api/admin", {
+            action: "verify-link",
+            slug: product.slug,
+            revision: 0,
+            url: "https://example.com/",
+          }),
+        )
+      ).status,
+    ).toBe(409);
+    expect(spy).not.toHaveBeenCalled();
+    spy.mockImplementationOnce(async () => {
+      run(
+        "UPDATE product_drafts SET revision=revision+1 WHERE slug=?",
+        product.slug,
+      );
+      return {
+        url: "https://example.com/",
+        checkedAt: new Date().toISOString(),
+        scope: "Entry page",
+      };
+    });
+    expect(
+      (
+        await adminPost(
+          request("/api/admin", {
+            action: "verify-link",
+            slug: product.slug,
+            revision: 1,
+            url: "https://example.com/",
+          }),
+        )
+      ).status,
+    ).toBe(409);
+    const verified = await adminPost(
+      request("/api/admin", {
+        action: "verify-link",
+        slug: product.slug,
+        revision: 2,
+        url: "https://example.com/",
+      }),
+    );
+    expect(verified.status).toBe(200);
+    expect(await verified.json()).toMatchObject({
+      revision: 3,
+      product: { launch: { url: "https://example.com/" } },
+    });
+  } finally {
+    spy.mockRestore();
+  }
+});
 it("requires an administrator role for account-state changes and revokes disabled sessions", async () => {
   const owner = await register(
       "owner@example.com",
@@ -423,11 +502,44 @@ it("requires an administrator role for account-state changes and revokes disable
   ).toBe(400);
 });
 
-it("keeps repository references private and refuses internal product publication",async()=>{
- const id=await register("owner@example.com","Owner","a long owner password here");run("UPDATE users SET role='admin',verified=1 WHERE id=?",id);jar.set(SESSION_COOKIE,createSession(id));
- expect((await adminPost(request("/api/admin",{action:"repository",slug:"desk",repository:"example-owner/private-code",private:true}))).status).toBe(200);
- const admin=await adminGet();expect((await admin.json()).repositories[0].repository).toBe("example-owner/private-code");
- const {baseCatalogue}=await import("@/lib/catalogue");const{publishedCatalogue}=await import("@/lib/server/catalogue");expect(JSON.stringify(publishedCatalogue())).not.toContain("private-code");
- expect((await adminPost(request("/api/admin",{action:"publish",product:{...baseCatalogue[0],visibility:"internal"},approvePublication:true}))).status).toBe(400);
- run("UPDATE users SET role='user' WHERE id=?",id);expect((await adminGet()).status).toBe(403);
+it("keeps repository references private and refuses internal product publication", async () => {
+  const id = await register(
+    "owner@example.com",
+    "Owner",
+    "a long owner password here",
+  );
+  run("UPDATE users SET role='admin',verified=1 WHERE id=?", id);
+  jar.set(SESSION_COOKIE, createSession(id));
+  expect(
+    (
+      await adminPost(
+        request("/api/admin", {
+          action: "repository",
+          slug: "desk",
+          repository: "example-owner/private-code",
+          private: true,
+        }),
+      )
+    ).status,
+  ).toBe(200);
+  const admin = await adminGet();
+  expect((await admin.json()).repositories[0].repository).toBe(
+    "example-owner/private-code",
+  );
+  const { baseCatalogue } = await import("@/lib/catalogue");
+  const { publishedCatalogue } = await import("@/lib/server/catalogue");
+  expect(JSON.stringify(publishedCatalogue())).not.toContain("private-code");
+  expect(
+    (
+      await adminPost(
+        request("/api/admin", {
+          action: "publish",
+          product: { ...baseCatalogue[0], visibility: "internal" },
+          approvePublication: true,
+        }),
+      )
+    ).status,
+  ).toBe(400);
+  run("UPDATE users SET role='user' WHERE id=?", id);
+  expect((await adminGet()).status).toBe(403);
 });

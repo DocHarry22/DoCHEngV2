@@ -229,27 +229,44 @@ export async function POST(request: Request) {
       return apiResponse({ ok: true, message: "Entitlement updated." });
     }
     if (body.action === "verify-link") {
-      const evidence = await probeUrl(field(body, "url", 10, 2000));
       const slug = field(body, "slug", 2, 80);
-      const draft = rows<{ document: string }>(
-        "SELECT document FROM product_drafts WHERE slug=?",
+      const draft = rows<{ document: string; revision: number }>(
+        "SELECT document,revision FROM product_drafts WHERE slug=?",
         slug,
       )[0];
       if (!draft) throw new HttpError(400, "Save the draft first.");
+      if (body.revision !== draft.revision)
+        throw new HttpError(
+          409,
+          "This draft changed. Reload before verifying its launch URL.",
+        );
+      const evidence = await probeUrl(field(body, "url", 10, 2000));
       const product = validateProduct(JSON.parse(draft.document));
       product.launch = evidence;
-      run(
-        "UPDATE product_drafts SET document=?,revision=revision+1,approved_at=NULL,approved_by=NULL,updated_at=? WHERE slug=?",
-        JSON.stringify(product),
-        Date.now(),
-        slug,
-      );
-      audit(user.id, "product.link-verified", slug, evidence.url);
+      transaction(() => {
+        const current = rows<{ revision: number }>(
+          "SELECT revision FROM product_drafts WHERE slug=?",
+          slug,
+        )[0];
+        if (current?.revision !== draft.revision)
+          throw new HttpError(
+            409,
+            "This draft changed during verification. Reload and try again.",
+          );
+        run(
+          "UPDATE product_drafts SET document=?,revision=revision+1,approved_at=NULL,approved_by=NULL,updated_at=? WHERE slug=?",
+          JSON.stringify(product),
+          Date.now(),
+          slug,
+        );
+        audit(user.id, "product.link-verified", slug, evidence.url);
+      });
       return apiResponse({
         ok: true,
         message:
           "Entry page verified. Review the application identity and workflows before publishing.",
         product,
+        revision: draft.revision + 1,
       });
     }
     const product = validateProduct(body.product);
@@ -321,10 +338,14 @@ export async function POST(request: Request) {
     });
     return apiResponse({
       ok: true,
+      product,
+      revision: (current?.revision ?? 0) + 1,
       message:
         body.action === "publish"
           ? "Product publication approved."
-          : "Draft saved; publication requires explicit approval.",
+          : body.action === "unpublish"
+            ? "Product publication withdrawn. Your draft has been kept."
+            : "Draft saved; publication requires explicit approval.",
     });
   } catch (error) {
     return apiError(error);

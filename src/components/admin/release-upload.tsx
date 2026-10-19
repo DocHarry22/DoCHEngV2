@@ -5,9 +5,13 @@ import { useState } from "react";
 export function ReleaseUpload({
   slugs,
   onUploaded,
+  productSlug,
+  onBusyChange,
 }: {
   slugs: string[];
   onUploaded?: (slug: string) => Promise<void>;
+  productSlug?: string;
+  onBusyChange?: (busy: boolean) => void;
 }) {
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
@@ -43,6 +47,7 @@ export function ReleaseUpload({
           String(values.get("publisherReviewed") === "on"),
         );
         setBusy(true);
+        onBusyChange?.(true);
         try {
           const response = await fetch("/api/admin/artifacts?" + params, {
             method: "POST",
@@ -51,11 +56,20 @@ export function ReleaseUpload({
           });
           const result = await response.json();
           setMessage(result.message);
-          if (response.ok) await onUploaded?.(String(values.get("slug")));
+          if (response.ok) {
+            try {
+              await onUploaded?.(String(values.get("slug")));
+            } catch {
+              setMessage(
+                "Release uploaded. Reload the saved draft to review it before publishing.",
+              );
+            }
+          }
         } catch {
           setMessage("Upload failed. Please retry.");
         } finally {
           setBusy(false);
+          onBusyChange?.(false);
         }
       }}
     >
@@ -67,7 +81,14 @@ export function ReleaseUpload({
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="text-sm">
           Product
-          <select name="slug" className="field mt-2" required>
+          <select
+            name="slug"
+            className="field mt-2"
+            required
+            value={productSlug}
+            onChange={productSlug ? () => {} : undefined}
+            disabled={busy}
+          >
             {slugs.map((slug) => (
               <option key={slug}>{slug}</option>
             ))}
@@ -80,7 +101,7 @@ export function ReleaseUpload({
             className="field mt-2"
             placeholder="1.0.0"
             required
-            pattern="v?[0-9]+\.[0-9]+\.[0-9]+(-[a-z0-9.-]+)?"
+            pattern={String.raw`v?[0-9]+\.[0-9]+\.[0-9]+(-[a-z0-9.\-]+)?`}
           />
         </label>
         <label className="text-sm">
