@@ -390,13 +390,11 @@ it("keeps launch verification tied to the saved revision, including changes duri
   };
   await adminPost(request("/api/admin", { action: "save-product", product }));
   const probe = await import("@/lib/server/probe-url");
-  const spy = vi
-    .spyOn(probe, "probeUrl")
-    .mockResolvedValue({
-      url: "https://example.com/",
-      checkedAt: new Date().toISOString(),
-      scope: "Entry page",
-    });
+  const spy = vi.spyOn(probe, "probeUrl").mockResolvedValue({
+    url: "https://example.com/",
+    checkedAt: new Date().toISOString(),
+    scope: "Entry page",
+  });
   try {
     expect(
       (
@@ -450,6 +448,128 @@ it("keeps launch verification tied to the saved revision, including changes duri
   } finally {
     spy.mockRestore();
   }
+});
+it("reports full dashboard totals beyond list limits and uses effective published products", async () => {
+  const owner = await register(
+    "owner@example.com",
+    "Dashboard owner",
+    "a long owner password here",
+  );
+  run("UPDATE users SET role='admin',verified=1 WHERE id=?", owner);
+  jar.set(SESSION_COOKIE, createSession(owner));
+  for (let i = 0; i < 105; i++) {
+    const id = randomUUID();
+    run(
+      "INSERT INTO users (id,email,name,password_hash,created_at) VALUES (?,?,?,?,?)",
+      id,
+      id + "@example.test",
+      "Fixture",
+      "unused",
+      Date.now(),
+    );
+    run(
+      "INSERT INTO tickets (id,email,name,enquiry_type,product,message,organization,context,created_at) VALUES (?,?,?,?,?,?,?,?,?)",
+      id,
+      id + "@example.test",
+      "Fixture",
+      "technical",
+      "desk",
+      "Local fixture support enquiry",
+      "",
+      "",
+      Date.now(),
+    );
+    run(
+      "INSERT INTO mail_outbox (id,recipient,subject,body,created_at) VALUES (?,?,?,?,?)",
+      randomUUID(),
+      id + "@example.test",
+      "Local fixture",
+      "Do not send",
+      Date.now(),
+    );
+  }
+  const { baseCatalogue } = await import("@/lib/catalogue");
+  run(
+    "INSERT INTO published_products VALUES (?,?,?,?)",
+    baseCatalogue[0].slug,
+    JSON.stringify({ withdrawn: true }),
+    owner,
+    Date.now(),
+  );
+  const result = await adminGet();
+  expect(result.status).toBe(200);
+  const data = await result.json();
+  expect(data.users).toHaveLength(100);
+  expect(data.tickets).toHaveLength(100);
+  expect(data.mail).toHaveLength(100);
+  expect(data.summary).toMatchObject({
+    accounts: 106,
+    newAccounts7Days: 106,
+    openTickets: 105,
+    queuedMail: 105,
+    publishedProducts: baseCatalogue.length - 1,
+  });
+  expect(data).not.toHaveProperty("HOSTINGER_MAIL_TOKEN");
+});
+it("distinguishes published releases from unpublished draft files", async () => {
+  const owner = await register(
+    "owner@example.com",
+    "Owner",
+    "a long owner password here",
+  );
+  run("UPDATE users SET role='admin',verified=1 WHERE id=?", owner);
+  jar.set(SESSION_COOKIE, createSession(owner));
+  const { baseCatalogue } = await import("@/lib/catalogue");
+  const release = {
+    id: randomUUID(),
+    version: "1.0.0",
+    channel: "preview",
+    platform: "Windows",
+    fileName: "qa.zip",
+    sha256: "a".repeat(64),
+    bytes: 22,
+    releasedAt: "2026-10-19",
+    requirements: "Local test",
+    notes: "Local test release",
+    access: "public",
+  };
+  const product = {
+    ...baseCatalogue[0],
+    slug: "overview-qa",
+    status: "planned",
+    launch: undefined,
+    releases: [release],
+  };
+  run(
+    "INSERT INTO published_products VALUES (?,?,?,?)",
+    product.slug,
+    JSON.stringify(product),
+    owner,
+    Date.now(),
+  );
+  const draft = {
+    ...product,
+    releases: [release, { ...release, id: randomUUID(), version: "1.1.0" }],
+  };
+  run(
+    "INSERT INTO product_drafts VALUES (?,?,?,?,?,?,?)",
+    product.slug,
+    JSON.stringify(draft),
+    2,
+    owner,
+    null,
+    null,
+    Date.now(),
+  );
+  const data = await (await adminGet()).json();
+  expect(data.summary.draftChanges).toBe(1);
+  expect(data.summary.unpublishedReleases).toBe(1);
+  expect(
+    data.releases
+      .filter((r: { productSlug: string }) => r.productSlug === product.slug)
+      .map((r: { published: boolean }) => r.published)
+      .sort(),
+  ).toEqual([false, true]);
 });
 it("requires an administrator role for account-state changes and revokes disabled sessions", async () => {
   const owner = await register(

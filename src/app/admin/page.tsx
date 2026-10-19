@@ -15,7 +15,7 @@ export default async function Admin() {
     <Section className="py-16">
       <p className="eyebrow">DoCHEng administration</p>
       <h1 className="mb-8 mt-3 text-4xl font-semibold">
-        Product and customer operations
+        Admin dashboard
       </h1>
       <AdminPanel />
     </Section>
