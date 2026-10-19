@@ -2,14 +2,17 @@
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import type { CatalogueProduct } from "@/lib/catalogue";
-import { ReleaseUpload } from "./release-upload";
+import {
+  GuidedProductEditor,
+  type ProductDraft,
+} from "./guided-product-editor";
 import { CustomerOperations } from "./customer-operations";
 import { AggregateReport } from "./aggregate-report";
 import { RepositoryReferences } from "./repository-references";
 type Row = Record<string, string | number | null>;
 type AdminData = {
   products: CatalogueProduct[];
-  drafts: Row[];
+  drafts: ProductDraft[];
   tickets: Row[];
   users: Row[];
   audit: Row[];
@@ -20,10 +23,7 @@ type AdminData = {
 };
 export function AdminPanel() {
   const [data, setData] = useState<AdminData>();
-  const [slug, setSlug] = useState("");
-  const [document, setDocument] = useState("");
   const [notice, setNotice] = useState("");
-  const [approve, setApprove] = useState(false);
   const [busy, setBusy] = useState(false);
   async function reload(): Promise<AdminData> {
     const r = await fetch("/api/admin", { cache: "no-store" });
@@ -53,8 +53,6 @@ export function AdminPanel() {
       setNotice(value.message ?? JSON.stringify(value));
       if (r.ok) {
         await reload();
-        setApprove(false);
-        if (value.product) setDocument(JSON.stringify(value.product, null, 2));
       }
       return r.ok;
     } catch {
@@ -64,15 +62,6 @@ export function AdminPanel() {
       setBusy(false);
     }
   }
-  function select(value: string) {
-    setSlug(value);
-    setApprove(false);
-    const saved = data?.drafts.find((p) => p.slug === value);
-    const p = saved
-      ? JSON.parse(String(saved.document))
-      : data?.products.find((p) => p.slug === value);
-    setDocument(JSON.stringify(p, null, 2));
-  }
   return (
     <div className="space-y-8">
       {notice ? (
@@ -80,254 +69,15 @@ export function AdminPanel() {
           {notice}
         </p>
       ) : null}
-      <Card className="space-y-4">
-        <h2 className="text-2xl font-semibold">Product management</h2>
-        <p className="text-sm">
-          Discovery candidates remain unpublished until you explicitly approve
-          publication. Save a draft before verifying its launch URL. Edit
-          descriptive metadata and proposed pricing here; billing activation is
-          a separate release decision.
-        </p>
-        <label className="block text-sm">
-          Choose a product
-          <select
-            className="field mt-2"
-            value={slug}
-            onChange={(e) => select(e.target.value)}
-          >
-            <option value="">Select a draft or publication candidate</option>
-            {Array.from(
-              new Set([
-                ...(data?.products.map((p) => p.slug) ?? []),
-                ...(data?.drafts.map((p) => String(p.slug)) ?? []),
-              ]),
-            ).map((value) => (
-              <option key={value}>{value}</option>
-            ))}
-          </select>
-        </label>
-        <button
-          className="text-link"
-          disabled={!slug || busy}
-          onClick={async () => {
-            try {
-              const latest = await reload();
-              const draft = latest.drafts.find((p) => p.slug === slug);
-              const product = draft
-                ? JSON.parse(String(draft.document))
-                : latest.products.find((p) => p.slug === slug);
-              setDocument(JSON.stringify(product, null, 2));
-              setApprove(false);
-              setNotice("Selected draft reloaded from the server.");
-            } catch {
-              setNotice("Unable to reload the draft.");
-            }
-          }}
-        >
-          Reload selected draft (discard edits)
-        </button>
-        <button
-          className="text-link"
-          onClick={() => {
-            const p = data?.products[0];
-            if (p) {
-              setSlug("new-product");
-              setDocument(
-                JSON.stringify(
-                  {
-                    ...p,
-                    id: "app-new-product",
-                    slug: "new-product",
-                    name: "New product",
-                    featured: false,
-                    launch: undefined,
-                    releases: [],
-                    screenshots: [],
-                    status: "planned",
-                  },
-                  null,
-                  2,
-                ),
-              );
-            }
-          }}
-        >
-          Add an application
-        </button>
-        {document ? (
-          <>
-            <label className="block text-sm">
-              Product metadata
-              <textarea
-                spellCheck={false}
-                className="field mt-2 min-h-96 font-mono text-xs"
-                value={document}
-                onChange={(e) => setDocument(e.target.value)}
-              />
-            </label>
-            <p className="text-xs">
-              Screenshots use uploaded media URLs; launch evidence and release
-              files are controlled by separate server operations. Private
-              repository administration references must stay outside public
-              metadata.
-            </p>
-            <div className="flex flex-wrap gap-3">
-              <button
-                disabled={busy}
-                className="action-button"
-                onClick={() => {
-                  try {
-                    const product = JSON.parse(document);
-                    void send({
-                      action: "save-product",
-                      product,
-                      revision: data?.drafts.find(
-                        (p) => p.slug === product.slug,
-                      )?.revision,
-                    });
-                  } catch {
-                    setNotice("The product metadata is not valid JSON.");
-                  }
-                }}
-              >
-                Save draft
-              </button>
-              <button
-                disabled={busy}
-                className="action-button"
-                onClick={() => {
-                  try {
-                    const product = JSON.parse(document);
-                    void send({
-                      action: "unpublish",
-                      product,
-                      revision: data?.drafts.find(
-                        (p) => p.slug === product.slug,
-                      )?.revision,
-                    });
-                  } catch {
-                    setNotice("Invalid JSON.");
-                  }
-                }}
-              >
-                Withdraw draft publication
-              </button>
-            </div>
-            <form
-              className="flex flex-wrap gap-3"
-              onSubmit={(e) => {
-                e.preventDefault();
-                const f = new FormData(e.currentTarget);
-                void send({
-                  action: "verify-link",
-                  slug: JSON.parse(document).slug,
-                  url: f.get("url"),
-                });
-              }}
-            >
-              <label className="flex-1 text-sm">
-                Public launch URL
-                <input
-                  className="field mt-2"
-                  name="url"
-                  type="url"
-                  required
-                  placeholder="https://your-verified-application.example"
-                />
-              </label>
-              <button disabled={busy} className="action-button self-end">
-                Verify entry page
-              </button>
-            </form>
-            <label className="flex items-start gap-3 text-sm">
-              <input
-                className="mt-1"
-                type="checkbox"
-                checked={approve}
-                onChange={(e) => setApprove(e.target.checked)}
-              />
-              <span>
-                I have reviewed this product, its visibility, verified links and
-                original assets. I explicitly approve public publication.
-              </span>
-            </label>
-            <button
-              disabled={!approve || busy}
-              className="action-button"
-              onClick={() => {
-                try {
-                  const product = JSON.parse(document);
-                  void send({
-                    action: "publish",
-                    product,
-                    revision: data?.drafts.find((p) => p.slug === product.slug)
-                      ?.revision,
-                    approvePublication: true,
-                  });
-                } catch {
-                  setNotice("Invalid product JSON.");
-                }
-              }}
-            >
-              Approve and publish
-            </button>
-          </>
-        ) : null}
-      </Card>
-      <Card className="space-y-4">
-        <h2 className="text-2xl font-semibold">Logos and screenshots</h2>
-        <form
-          className="space-y-3"
-          onSubmit={async (e) => {
-            e.preventDefault();
-            const file = new FormData(e.currentTarget).get("image");
-            if (!(file instanceof File)) return;
-            setBusy(true);
-            try {
-              const r = await fetch("/api/admin/media", {
-                method: "POST",
-                headers: { "Content-Type": file.type },
-                body: file,
-              });
-              const v = await r.json();
-              setNotice(r.ok ? "Uploaded media: " + v.url : v.message);
-            } catch {
-              setNotice("Upload failed.");
-            } finally {
-              setBusy(false);
-            }
-          }}
-        >
-          <label className="block text-sm">
-            PNG, JPEG or WebP image, up to 5 MB
-            <input
-              className="field mt-2"
-              type="file"
-              name="image"
-              accept="image/png,image/jpeg,image/webp"
-              required
-            />
-          </label>
-          <button disabled={busy} className="action-button">
-            Upload image
-          </button>
-        </form>
-      </Card>
-      <Card className="space-y-4">
-        <h2 className="text-2xl font-semibold">Release artifacts</h2>
-        <ReleaseUpload
-          slugs={data?.drafts.map((p) => String(p.slug)) ?? []}
-          onUploaded={async (slug) => {
-            const latest = await reload();
-            const draft = latest.drafts.find((p) => p.slug === slug);
-            if (draft) {
-              setSlug(slug);
-              setDocument(String(draft.document));
-              setApprove(false);
-            }
-          }}
+      {data ? (
+        <GuidedProductEditor
+          products={data.products}
+          drafts={data.drafts}
+          onReload={reload}
         />
-      </Card>
+      ) : (
+        <p>Loading administrator tools…</p>
+      )}
       <Card className="space-y-4">
         <h2 className="text-2xl font-semibold">Support enquiries</h2>
         {data?.tickets.map((t) => (

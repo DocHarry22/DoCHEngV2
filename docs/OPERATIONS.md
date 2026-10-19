@@ -1,5 +1,9 @@
 # DoCHEng platform operations
 
+## Product editing
+
+The administrator dashboard includes a guided product editor with live preview, draft saving, attached image and release uploads, launch verification and explicit publication. See [Guided product editor](GUIDED-PRODUCT-EDITOR.md) for the owner workflow. Existing administrator access checks, private draft media and revision conflict checks apply to all operations.
+
 ## Existing deployment
 
 Keep the existing Hostinger Next.js Node 22 application connected to `DocHarry22/DoCHEngV2`. The baseline deployment is `8300c2d1d15356b20297eb6067bd493565d8a128`. The baseline Passenger root was `/home/u836398163/domains/docheng.co.za/nodejs`. After the October deployment, the authenticated `.htaccess` read confirms the active root is `/home/u836398163/domains/docheng.co.za/hbuilds/current/nodejs`, with the provider managing the current-version switch and preload configuration. The `desk`, `resume`, `coursecampass` and `calc` folders are separate uploads in public_html. Do not replace the entire document root, edit generated deployment files, or delete those folders.
