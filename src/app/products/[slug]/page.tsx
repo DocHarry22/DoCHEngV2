@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { publishedCatalogue } from "@/lib/server/catalogue";
-import { productAction } from "@/lib/catalogue";
+import { ProductAccessLinks } from "@/components/apps/product-access-links";
 import { ProductIcon } from "@/components/apps/product-icon";
 import { ScreenshotGallery } from "@/components/apps/screenshot-gallery";
 import { Section } from "@/components/ui/section";
@@ -29,7 +29,6 @@ export default async function Product({ params }: Props) {
   const catalogue = publishedCatalogue();
   const product = catalogue.find((p) => p.slug === slug);
   if (!product) notFound();
-  const action = productAction(product);
   const schema = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
@@ -61,14 +60,7 @@ export default async function Product({ params }: Props) {
             {product.summary}
           </p>
           <div className="flex flex-wrap gap-3">
-            <a
-              className="action-button"
-              href={action.href}
-              target={action.external ? "_blank" : undefined}
-              rel={action.external ? "noopener noreferrer" : undefined}
-            >
-              {action.label}
-            </a>
+            <ProductAccessLinks product={product} />
             <Link
               className="text-link self-center"
               href={product.documentation}

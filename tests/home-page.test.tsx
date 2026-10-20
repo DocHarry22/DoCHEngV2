@@ -20,4 +20,10 @@ it("preserves the brand tree and connects real applications and engineering tool
   expect(
     screen.getByText(/Paid checkout is not activated/),
   ).toBeInTheDocument();
+  for (const product of baseCatalogue.filter((p) => p.launch)) {
+    expect(screen.getAllByRole("link").some((link) => link.getAttribute("href") === product.launch!.url)).toBe(true);
+  }
+  expect(screen.getByRole("link", { name: "Download for Android (APK)" })).toHaveAttribute(
+    "href", baseCatalogue.find((p) => p.slug === "apologia-sancta")!.releases[0].externalUrl,
+  );
 });

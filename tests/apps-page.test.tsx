@@ -22,8 +22,12 @@ describe("published app marketplace", () => {
       ),
     ).not.toBeInTheDocument();
     expect(
-      screen.getAllByRole("link", { name: "Open Beta" })[0],
+      screen.getAllByRole("link", { name: "Open web app" })[0],
     ).toHaveAttribute("href", "https://docheng-desk2.vercel.app/login");
+    expect(screen.getByRole("link", { name: "Download for Android (APK)" })).toHaveAttribute(
+      "href",
+      "https://github.com/DocHarry22/apologiasancta-ui/releases/download/android-v1.0.3/apologia-sancta.apk",
+    );
   });
   it("searches, filters, resets and compares actual products", async () => {
     const user = userEvent.setup();

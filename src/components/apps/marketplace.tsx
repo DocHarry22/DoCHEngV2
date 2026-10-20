@@ -4,10 +4,10 @@ import Link from "next/link";
 import {
   type CatalogueProduct,
   filterCatalogue,
-  productAction,
   categories,
 } from "@/lib/catalogue";
 import { ProductIcon } from "./product-icon";
+import { ProductAccessLinks } from "./product-access-links";
 import { Card } from "@/components/ui/card";
 const subscribeLocation = (listener: () => void) => {
   window.addEventListener("popstate", listener);
@@ -66,7 +66,6 @@ export function Marketplace({ products }: { products: CatalogueProduct[] }) {
         <h2 className="text-2xl font-semibold">{title}</h2>
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
           {items.map((p) => {
-            const action = productAction(p);
             return (
               <Card
                 key={p.id}
@@ -105,14 +104,7 @@ export function Marketplace({ products }: { products: CatalogueProduct[] }) {
                       : "Paid · see details"}
                 </p>
                 <div className="flex flex-wrap gap-3">
-                  <a
-                    className="action-button"
-                    href={action.href}
-                    target={action.external ? "_blank" : undefined}
-                    rel={action.external ? "noopener noreferrer" : undefined}
-                  >
-                    {action.label}
-                  </a>
+                  <ProductAccessLinks product={p} />
                   <Link
                     className="text-link self-center"
                     href={`/products/${p.slug}`}

@@ -15,7 +15,7 @@ it("withdraws unverifiable installers and preserves product anchors", () => {
   for (const slug of ["desk", "resume", "compass"])
     expect(container.querySelector("#" + slug)).toBeInTheDocument();
   expect(
-    screen.getByRole("link", { name: "Download for Android" }),
+    screen.getByRole("link", { name: "Download for Android (APK)" }),
   ).toHaveAttribute(
     "href",
     "https://github.com/DocHarry22/apologiasancta-ui/releases/download/android-v1.0.3/apologia-sancta.apk",
@@ -24,4 +24,7 @@ it("withdraws unverifiable installers and preserves product anchors", () => {
     screen.queryByRole("link", { name: "Download for Windows" }),
   ).not.toBeInTheDocument();
   expect(screen.queryByText(/v2\.4\.1/)).not.toBeInTheDocument();
+  expect(screen.getByRole("link", { name: "Open DoCHEng Desk website" })).toHaveAttribute(
+    "href", "https://docheng-desk2.vercel.app/login",
+  );
 });

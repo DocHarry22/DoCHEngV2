@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { publishedCatalogue } from "@/lib/server/catalogue";
-import { categories, productAction } from "@/lib/catalogue";
+import { categories } from "@/lib/catalogue";
 import { engineeringTools } from "@/lib/engineering-tools";
 import { Section } from "@/components/ui/section";
 import { Card } from "@/components/ui/card";
 import { BrandLockup } from "@/components/branding/brand-lockup";
 import { ProductIcon } from "@/components/apps/product-icon";
+import { ProductAccessLinks } from "@/components/apps/product-access-links";
 import { ProductFinder } from "@/components/apps/product-finder";
 import { Newsletter } from "@/components/marketing/newsletter";
 export const dynamic = "force-dynamic";
@@ -104,11 +105,7 @@ export default function Home() {
           </Link>
         </div>
         <div className="grid gap-5 md:grid-cols-3">
-          {products
-            .filter((p) => p.category !== "Sister Projects")
-            .slice(0, 3)
-            .map((p) => {
-              const action = productAction(p);
+          {products.map((p) => {
               return (
                 <Card key={p.id} className="market-card flex flex-col gap-4">
                   <div className="flex items-start justify-between gap-3">
@@ -117,7 +114,10 @@ export default function Home() {
                       {p.status.replaceAll("-", " ")}
                     </span>
                   </div>
-                  <h3 className="text-2xl font-semibold">{p.name}</h3>
+                  <div>
+                    <p className="eyebrow">{p.category}</p>
+                    <h3 className="mt-2 text-2xl font-semibold">{p.name}</h3>
+                  </div>
                   <p className="flex-1 text-sm leading-relaxed text-[var(--text-subtle)]">
                     {p.summary}
                   </p>
@@ -128,14 +128,7 @@ export default function Home() {
                       : p.pricing}
                   </p>
                   <div className="flex flex-wrap gap-4">
-                    <a
-                      className="text-link"
-                      href={action.href}
-                      target={action.external ? "_blank" : undefined}
-                      rel={action.external ? "noopener noreferrer" : undefined}
-                    >
-                      {action.label} ↗
-                    </a>
+                    <ProductAccessLinks product={p} primaryClassName="text-link" />
                     <Link className="text-link" href={"/products/" + p.slug}>
                       Product details
                     </Link>
