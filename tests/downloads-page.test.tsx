@@ -1,8 +1,9 @@
 import { render, screen } from "@testing-library/react";
 import { vi } from "vitest";
 import { baseCatalogue } from "@/lib/catalogue";
+import { publishedCatalogue } from "@/lib/server/catalogue";
 vi.mock("@/lib/server/catalogue", () => ({
-  publishedCatalogue: () => baseCatalogue,
+  publishedCatalogue: vi.fn(() => baseCatalogue),
 }));
 import Downloads from "@/app/downloads/page";
 it("withdraws unverifiable installers and preserves product anchors", () => {
@@ -27,4 +28,12 @@ it("withdraws unverifiable installers and preserves product anchors", () => {
   expect(screen.getByRole("link", { name: "Open DoCHEng Desk website" })).toHaveAttribute(
     "href", "https://docheng-desk2.vercel.app/login",
   );
+});
+
+it("does not expose retained website evidence when a product returns to planned status", () => {
+  vi.mocked(publishedCatalogue).mockReturnValueOnce([
+    { ...baseCatalogue[0], status: "planned", releases: [] },
+  ]);
+  render(<Downloads />);
+  expect(screen.queryByRole("link", { name: "Open DoCHEng Desk website" })).not.toBeInTheDocument();
 });

@@ -511,6 +511,36 @@ it("reports full dashboard totals beyond list limits and uses effective publishe
   });
   expect(data).not.toHaveProperty("HOSTINGER_MAIL_TOKEN");
 });
+it("publishes installer-only products only with a server-verified release", async () => {
+  const owner = await register("owner@example.com", "Owner", "a long owner password here");
+  run("UPDATE users SET role='admin',verified=1 WHERE id=?", owner);
+  jar.set(SESSION_COOKIE, createSession(owner));
+  const { baseCatalogue } = await import("@/lib/catalogue");
+  const { publishedCatalogue } = await import("@/lib/server/catalogue");
+  const release = {
+    id: randomUUID(), version: "1.0.0", channel: "preview", platform: "Windows",
+    fileName: "qa.msi", sha256: "a".repeat(64), bytes: 1000,
+    releasedAt: "2026-10-20", requirements: "Windows 10 or later",
+    notes: "QA installer", access: "public",
+  };
+  const product = {
+    ...baseCatalogue[0], slug: "installer-qa", status: "beta",
+    launch: undefined, releases: [release],
+  };
+  // A client cannot make an unverified installer publishable.
+  expect((await adminPost(request("/api/admin", {
+    action: "publish", product, approvePublication: true,
+  }))).status).toBe(400);
+  expect(publishedCatalogue().some((p) => p.slug === product.slug)).toBe(false);
+  // Verified upload metadata is attached to the saved draft by the server.
+  run("INSERT INTO product_drafts VALUES (?,?,?,?,?,?,?)",
+    product.slug, JSON.stringify(product), 1, owner, null, null, Date.now());
+  expect((await adminPost(request("/api/admin", {
+    action: "publish", product, revision: 1, approvePublication: true,
+  }))).status).toBe(200);
+  expect(publishedCatalogue().find((p) => p.slug === product.slug)?.releases[0].id).toBe(release.id);
+});
+
 it("distinguishes published releases from unpublished draft files", async () => {
   const owner = await register(
     "owner@example.com",

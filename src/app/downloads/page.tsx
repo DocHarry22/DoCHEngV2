@@ -95,7 +95,7 @@ export default function Downloads() {
               for this product.
             </p>
           )}
-          {p.launch ? (
+          {p.launch && (p.status === "live" || p.status === "beta") ? (
             <a
               className="text-link inline-block"
               href={p.launch.url}
