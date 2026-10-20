@@ -302,11 +302,12 @@ export async function POST(request: Request) {
     if (
       body.action === "publish" &&
       (product.status === "live" || product.status === "beta") &&
-      !product.launch
+      !product.launch &&
+      !product.releases.length
     )
       throw new HttpError(
         400,
-        "Verify the public launch address before publishing an active product.",
+        "Verify a public launch address or attach a verified installer before publishing an active product.",
       );
     transaction(() => {
       if (current && body.revision !== current.revision)

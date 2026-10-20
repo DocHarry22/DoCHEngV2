@@ -1,6 +1,7 @@
 import { getAppsForLauncher } from "@/lib/ecosystem-manifest";
 import { selectedProducts } from "@/lib/selected-products";
 import { productPreviews } from "@/lib/product-previews";
+import { productDownloadLinks } from "@/lib/product-links";
 export const categories = [
   "Engineering and Productivity",
   "Career and Education",
@@ -147,10 +148,15 @@ export function productAction(product: CatalogueProduct) {
     product.launch
   )
     return {
-      label: product.status === "beta" ? "Open Beta" : "Open Application",
+      label:
+        product.category === "Sister Projects" ? "Visit website" : "Open web app",
       href: product.launch.url,
       external: true,
     };
+  if (product.status === "live" || product.status === "beta") {
+    const download = productDownloadLinks(product)[0];
+    if (download) return download;
+  }
   if (product.status === "planned")
     return { label: "View Roadmap", href: "/roadmap", external: false };
   if (product.status === "coming-soon")

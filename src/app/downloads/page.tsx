@@ -2,6 +2,7 @@ import Link from "next/link";
 import { publishedCatalogue } from "@/lib/server/catalogue";
 import { Section } from "@/components/ui/section";
 import { Card } from "@/components/ui/card";
+import { releaseDownloadLink } from "@/lib/product-links";
 export const dynamic = "force-dynamic";
 export const metadata = {
   title: "Verified downloads",
@@ -49,7 +50,9 @@ export default function Downloads() {
         <section id={p.slug} key={p.id} className="scroll-mt-24 space-y-4">
           <h2 className="text-2xl font-semibold">{p.name}</h2>
           {p.releases.length ? (
-            p.releases.map((r) => (
+            p.releases.map((r) => {
+              const download = releaseDownloadLink(r);
+              return (
               <Card key={r.id} className="space-y-3">
                 <h3 className="text-xl font-semibold">
                   {r.version} · {r.platform}
@@ -67,11 +70,11 @@ export default function Downloads() {
                 </p>
                 <a
                   className="action-button"
-                  href={r.externalUrl ?? "/api/downloads/" + r.id}
-                  target={r.externalUrl ? "_blank" : undefined}
-                  rel={r.externalUrl ? "noopener noreferrer" : undefined}
+                  href={download.href}
+                  target={download.external ? "_blank" : undefined}
+                  rel={download.external ? "noopener noreferrer" : undefined}
                 >
-                  Download for {r.platform}
+                  {download.label}
                 </a>
                 {r.publisherUrl ? (
                   <a
@@ -84,13 +87,24 @@ export default function Downloads() {
                   </a>
                 ) : null}
               </Card>
-            ))
+              );
+            })
           ) : (
             <p className="text-sm text-[var(--text-subtle)]">
               No Windows or Android installer has been independently verified
               for this product.
             </p>
           )}
+          {p.launch && (p.status === "live" || p.status === "beta") ? (
+            <a
+              className="text-link inline-block"
+              href={p.launch.url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Open {p.name} website
+            </a>
+          ) : null}
         </section>
       ))}
       <Card className="space-y-4">
