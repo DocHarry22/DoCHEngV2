@@ -1,0 +1,78 @@
+{
+  "origin": "https://resume.docheng.co.za",
+  "checkedAt": "2026-10-21T18:39:56.689Z",
+  "fictionalExamples": true,
+  "pages": [
+    {
+      "screenshot": "resume-builder.png",
+      "url": "https://resume.docheng.co.za/builder?id=2615158f-c246-4725-ad0b-ec387e14ec25",
+      "scope": "Live editor with fictional sample entered through its browser form; no server document was created.",
+      "title": "CareerForge | DoCHEng Resume Studio"
+    },
+    {
+      "screenshot": "resume-templates.png",
+      "url": "https://resume.docheng.co.za/templates/",
+      "scope": "Live eight-layout gallery; its sample documents are fictional.",
+      "title": "CareerForge | DoCHEng Resume Studio"
+    },
+    {
+      "screenshot": "resume-cover-letter.png",
+      "url": "https://resume.docheng.co.za/cover-letter/",
+      "scope": "Live cover-letter editor with a fictional local example.",
+      "title": "CareerForge | DoCHEng Resume Studio"
+    },
+    {
+      "screenshot": "resume-workspace.png",
+      "url": "https://resume.docheng.co.za/dashboard/",
+      "scope": "Live browser workspace in the isolated screenshot profile.",
+      "title": "CareerForge | DoCHEng Resume Studio"
+    },
+    {
+      "screenshot": "resume-checker.png",
+      "url": "https://resume.docheng.co.za/resume-scanner/",
+      "scope": "Live upload interface with Basic, ATS and Expert modes; no document was submitted.",
+      "title": "CareerForge | DoCHEng Resume Studio"
+    },
+    {
+      "screenshot": "resume-career-plan.png",
+      "url": "https://resume.docheng.co.za/career-plan/",
+      "scope": "Live 90-day plan starting screen in the isolated browser profile.",
+      "title": "CareerForge | DoCHEng Resume Studio"
+    },
+    {
+      "url": "https://resume.docheng.co.za/jobs/",
+      "status": 200,
+      "text": "YOUR NEXT CHAPTER IS OUT THERE\nFind a role worth your next move.\n\nSearch more sources, save your filters, and keep every opportunity together.\n\nOpen Auto Apply\nPublic job feeds\nGreenhouse & Lever boards\nSearch other sites\nPublic job feed\nAll public feeds\nJobicy\nArbeitnow\nRemotive\nJobicy remote roles, Arbeitnow European jobs, and Remotive. Each source offers a recent selection, with its own location restrictions.\nRole, skills or company\nLocation\nJob type\nAny type\nFull time\nPart time\nContract\nInternship\nFind jobs\nInclude listings marked worldwide\nFilters match the loaded selection. Remote does not always mean worldwide.\nSearch name (optional)\nSave this search\nSaved searches 0\n\nKeep up to 30 searches on this device. Restore a search, then run it when you’re ready.\n\nYour favorite filters will be ready here next time.\n\nA fresh start for your search.\n\nChoose a public feed or paste a company board to load real listings.\n\nYour saved opportunities\nMake room for what’s next.\n\nExplore three public feeds, or load a Greenhouse or Lever company board to prepare applications with the browser helper.\n\nSave jobs without changing their stage\nReview every application before sending"
+    },
+    {
+      "url": "https://resume.docheng.co.za/job-tracker/",
+      "status": 200,
+      "text": "YOUR CAREER, IN MOTION\n\nJob tracker\n0\n\nEvery opportunity. A clear next step.\n\nAdd a job\nSaved jobs\n0\nApplications\n0\nInterviews\n0\nOffers\n0\nSaved in this browser on this device. Export a backup to keep a copy.\nNo account or cloud sync\nBoard\nList\nCalendar\nExport backup\nCSV\nImport backup\nAll0\nSaved0\nApplied0\nInterview0\nOffer0\nClosed0\nMake your next move\n\nFound a role you like? Save it here and give every application a plan.\n\nAdd your first job\n\n0 of 0 opportunities"
+    },
+    {
+      "url": "https://resume.docheng.co.za/salary-analyzer/",
+      "status": 200,
+      "text": "KNOW WHAT THE NUMBERS MEAN\nA clearer view of your next offer.\n\nCompare your pay, deductions and work costs. Give every opportunity a little context.\n\nYour job tracker\n0\nSaved scenarios\n0\nCurrencies kept separate\n0\nTake-home estimates\nBuild a salary scenario\n\nStart with a saved job or your own figures.\n\nSaved opportunity (optional)\nStandalone scenario\nScenario name\nCurrency\nZAR\nUSD\nEUR\nGBP\nCAD\nAUD\nPay period\nMonthly\nAnnual\nWeekly\nEvery two weeks (26/year)\nHourly\nGross base pay\nAnnual cash bonus (optional)\n\nUse cash salary before employee deductions. Employer pension contributions, equity and total cost-to-company benefits need separate assessment. Hourly/weekly pay assumes 52 paid weeks; every-two-weeks pay assumes 26 payments.\n\nWhat reaches your pocket\nDeduction method\nCompare gross pay only\nEnter total monthly deductions\nSouth Africa · 2026/27 estimate\nMonthly work costs (optional)\nFor example, travel, parking or additional childcare. Used after take-home pay is estimated.\nNotes\nSave scenario\nClear editor\nYour figures, made clearer\nYour salary snapshot\n\nZAR · Gross comparison\n\nEnter your base pay to see the annual and monthly figures.\n\nA comparison of your own offers\n\nScenarios use the amounts you enter. Market salary benchmarks and currency conversion are not connected.\n\nSouth African estimate sources: SARS tax rates\n and employee UIF\n. Verified 19 October 2026. This is a planning estimate, not a payslip or tax assessment.\n\nCalculations and saved scenarios stay in this browser.\n\nSee your options together.\n\nChoose a baseline within each currency. Compare gross pay and the take-home assumptions you entered.\n\nExport comparison\nYour next offer deserves a closer look.\n\nSave a scenario above, then add another to compare. Up to 20 scenarios can be kept on this device."
+    },
+    {
+      "url": "https://resume.docheng.co.za/tailor/",
+      "status": 200,
+      "text": "THE RIGHT EXPERIENCE. THE RIGHT EMPHASIS.\nMake your next application personal.\n\nA focused resume for a specific opportunity, with your original kept safe.\n\nPrivate, browser-based comparison\n1\nChoose a resume\n2\nAdd the opportunity\n3\nMake it your own\nYour next opportunity\n\nGive your draft a clear direction.\n\nSaved resume\nChoose a saved resume\nProject coordinator — fictional example\nUntitled resume\nTarget job\nPaste a job description\nTarget role\nCompany\nJob description\nTerms to check\nUse suggestions\n\nChoose the wording that matters. Use one term or phrase per line, or separate them with commas. Up to 60 terms, 80 characters each.\n\nCreate tailored copy\n\nCopies your current content and design. Your original stays in your document library.\n\nSee what your draft says.\n\nCompare selected wording with visible resume sections.\n\n—\n\nSelected terms found · a wording check, not an ATS score.\n\nAlex Morgan\nalex.morgan@example.com\nCape Town, South Africa\nSKILLS\nCore skills\nProject planning\nCommunication\nBudget tracking\nMicrosoft Office\nLANGUAGES\nEnglish\nFluent\nPROFESSIONAL SUMMARY\n\nProject coordinator bringing people, plans and priorities together. Experienced in scheduling, budget tracking and clear stakeholder communication.\n\nWORK EXPERIENCE\nProject Coordinator\nMar 2022 — Present\n\nExample Studio\n\nCoordinate schedules and budgets across a multidisciplinary team.\nTurn project goals into practical plans and clear stakeholder updates.\nImprove handovers with thoughtful documentation.\nEDUCATION\nExample University\n2015 — 2018\n\nBachelor of Commerce\n\nYOUR STARTING POINT\nProject coordinator — fictional example\n\nCreate a separate copy before tailoring.\n\nFocus on what matters.\n\nAdd terms or choose suggestions to see which words and phrases appear in your draft.\n\nChecks whole words and phrases without case or separator punctuation. Synonyms are not inferred. Hidden sections, contact details, document titles and the job description do not count."
+    },
+    {
+      "url": "https://resume.docheng.co.za/history/",
+      "status": 200,
+      "text": "A LITTLE ROOM TO TRY SOMETHING NEW.\nYour story, saved along the way.\n\nKeep a checkpoint. Explore an edit. Come back with confidence.\n\nBack up with history\nOpen resume editor\nSaved resume\nChoose a saved resume\nProject coordinator — fictional example\nUntitled resume\n\nCheckpoints stay in this browser with your resume. Download a backup to keep a separate copy.\n\nYour checkpoints\n0/20\nCheckpoint name\nSave checkpoint\n\nCaptures the current saved draft, its design and application target. Up to 20 checkpoints per resume.\n\nA moment worth keeping.\n\nSave a checkpoint before trying a new layout or tailoring your next application.\n\nKeep a little room to experiment.\n\nGive your current draft a name and save your first checkpoint. You’ll be able to compare content, design and application target details here.\n\nA timeline you can return to\nA safety copy before each restore"
+    },
+    {
+      "url": "https://resume.docheng.co.za/interview-prep/",
+      "status": 200,
+      "text": "FIND YOUR WORDS. BUILD YOUR CONFIDENCE.\nA little practice. A stronger conversation.\n\nPrepare real examples and rehearse at your own pace.\n\nDownload answers\nYOUR INTRODUCTION\n1. Tell me about yourself.\nMOTIVATION\n2. Why do you want this role?\nPROBLEM SOLVING\n3. Tell me about a challenge you overcame.\nWORKING TOGETHER\n4. Describe a time you worked through a disagreement.\nGROWTH\n5. What would you like to improve?\nYOUR QUESTIONS\n6. What would you like to ask us?\nQuestion 1 of 6\nTell me about yourself.\n\nStart with your current focus, connect it to relevant experience, then explain what interests you about this opportunity.\n\nSituation\n\nSet the scene.\n\nTask\n\nWhat was your role?\n\nAction\n\nWhat did you do?\n\nResult\n\nWhat changed or what did you learn?\n\nYOUR PRACTICE NOTES\n0 of 6 answers drafted\nRehearse 0:00\nNext question\n\nThis is a personal practice notebook. Speak your answer aloud, keep your examples truthful and make room for a natural conversation. Explore writing guidance"
+    },
+    {
+      "url": "https://resume.docheng.co.za/auto-apply/",
+      "status": 200,
+      "text": "Opening Auto Apply…"
+    }
+  ]
+}

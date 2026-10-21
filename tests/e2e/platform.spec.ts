@@ -20,6 +20,7 @@ test("public routes, catalogue filters and responsive layout", async ({
     "/",
     "/apps",
     "/products/desk",
+    "/products/resume",
     "/downloads",
     "/pricing",
     "/support",
@@ -37,7 +38,7 @@ test("public routes, catalogue filters and responsive layout", async ({
         () => document.documentElement.scrollWidth <= innerWidth,
       ),
     ).toBe(true);
-    if (["/", "/apps", "/products/desk"].includes(path)) {
+    if (["/", "/apps", "/products/desk", "/products/resume"].includes(path)) {
       await page.screenshot({path: test.info().outputPath((path === "/" ? "home" : path.slice(1).replaceAll("/", "-")) + ".png")});
     }
   }

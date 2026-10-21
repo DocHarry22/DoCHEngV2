@@ -82,17 +82,22 @@ const starterPlansBySlug: Record<string, ProductPlan[]> = {
   ],
   resume: [
     {
-      name: "Standard",
-      price: "R399",
-      cadence: "one-time",
-      summary: "Resume parsing, technical scoring, and export templates.",
+      name: "Free",
+      price: "R0",
+      cadence: "Browser tools",
+      summary: "All browser career tools, eight résumé layouts and cover letters.",
     },
     {
-      name: "Career Plus",
-      price: "R79",
-      cadence: "per month",
-      summary:
-        "Continuous profile refinement with role tracking and recommendations.",
+      name: "Plus — preview",
+      price: "R19",
+      cadence: "per 30 days, or R190 / 365 days",
+      summary: "10 planned cloud-backup slots. Checkout is not live.",
+    },
+    {
+      name: "Pro — preview",
+      price: "R39",
+      cadence: "per 30 days, or R390 / 365 days",
+      summary: "50 planned cloud-backup slots. Checkout is not live.",
     },
   ],
   compass: [
@@ -144,7 +149,7 @@ export const ecosystemProducts: EcosystemProduct[] = productsForParent.map(
       targetUser: targetUserBySlug[app.slug] ?? app.audience,
       platforms: nonWebPlatforms.length ? nonWebPlatforms : ["Web"],
       pricingModel: pricingModelMap[app.pricingModel],
-      startingPrice: "Pricing under review",
+      startingPrice: app.slug === "resume" ? "R0 — browser tools" : "Pricing under review",
       plans,
       ctaLabel: app.status === "coming-soon" ? "Join Waitlist" : "Open Branch",
       ctaHref: app.internalRoute ?? `/products/${app.slug}`,

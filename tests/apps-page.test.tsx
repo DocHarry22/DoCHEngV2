@@ -51,10 +51,12 @@ describe("published app marketplace", () => {
     );
     expect(screen.getByRole("table")).toHaveTextContent("DoCHEng Desk");
   });
-  it("does not invent free offers for unconfirmed prices", async () => {
+  it("lists verified free browser tools without inventing free access for other apps", async () => {
     const user = userEvent.setup();
     render(<Apps />);
     await user.selectOptions(screen.getByLabelText("Pricing"), "free");
-    expect(screen.getByText(/No apps match/)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "DoCHEng Resume" })).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "DoCHEng Desk" })).not.toBeInTheDocument();
+    expect(screen.getByRole("status")).toHaveTextContent("1 applications");
   });
 });

@@ -35,10 +35,10 @@ export default function PricingPage() {
             Product-specific pricing built for technical execution at scale.
           </h1>
           <p className="notice mt-6">
-            The existing ZAR plan amounts below are proposals retained for owner
-            review. No provider-backed products or purchase workflow are
-            activated. VAT registration and applicable tax treatment have not
-            been confirmed. These figures are not active offers.
+            CareerForge browser career tools are free. Paid plan amounts below
+            are previews or proposals; checkout is not activated. See the
+            CareerForge product page for its current access and planned
+            cloud-backup prices.
           </p>
           <p className="mt-6 max-w-3xl text-base leading-relaxed text-[var(--text-subtle)] sm:text-lg">
             DoCHEng pricing is branch-aware. Each product uses the billing model

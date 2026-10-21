@@ -72,14 +72,18 @@ const details: Record<
   resume: {
     category: "Career and Education",
     description:
-      "A workspace for understanding and improving a CV. The public interface includes resume scanning and PDF template workflows. The associated parsing service extracts information from PDF and DOCX documents. Hosted analysis quality, personal-data handling and template exports remain subject to product-specific acceptance testing.",
+      "CareerForge brings your résumé, cover letters and job search into one browser workspace. Build and tailor documents, check a CV against a job description, track applications, compare pay scenarios, plan your next 90 days and prepare for interviews. Drafts stay on this device; imports, checks and service exports use the document service when requested.",
     features: [
-      "Explore a resume scanning interface",
-      "Work with PDF resume templates",
-      "PDF and DOCX parsing service in the associated codebase",
+      "Live résumé builder with eight layouts and customizable sections",
+      "Guided cover letters with six letterhead designs",
+      "Basic, ATS and Expert résumé checks with optional job-description comparison",
+      "PDF, DOCX and TXT import; PDF, DOCX, TXT and JSON export options",
+      "Browser document library, résumé tailoring and version history",
+      "Job search, application preparation and job tracking",
+      "Salary scenario comparison, 90-day career plans and interview practice",
     ],
     pricingNote:
-      "Existing Standard R399 once-off and Career Plus R79/month proposals are retained. No verified sale is offered here.",
+      "Browser career tools are free (R0). Optional cloud-backup plans are previews: Plus R19 / 30 days or R190 / 365 days; Pro R39 / 30 days or R390 / 365 days. No automatic renewal; account services and checkout are not live.",
   },
   compass: {
     category: "Career and Education",
@@ -119,7 +123,7 @@ export const baseCatalogue: CatalogueProduct[] = [
                   ? "coming-soon"
                   : "planned",
           featured: app.featured,
-          pricing: "unconfirmed",
+          pricing: app.slug === "resume" ? "free" : "unconfirmed",
           pricingNote:
             details[app.slug]?.pricingNote ?? "Pricing has not been verified.",
           launch: app.verifiedWeb,
