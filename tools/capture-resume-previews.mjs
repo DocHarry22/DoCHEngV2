@@ -78,6 +78,8 @@ try {
   ]) {
     await visit(route);
     await page.getByRole("heading").first().waitFor();
+    if (name === "career-plan") await page.getByRole("button", { name: "Create your first plan", exact: true }).waitFor();
+    if (name === "workspace") await page.getByText("Your recent documents", { exact: true }).waitFor();
     await capture(name, scope);
   }
   for (const route of ["/jobs/", "/job-tracker/", "/salary-analyzer/", "/tailor/", "/history/", "/interview-prep/", "/auto-apply/"]) {
