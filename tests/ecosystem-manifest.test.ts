@@ -17,7 +17,7 @@ describe("verified registry policy", () => {
       expect(p.description.length).toBeGreaterThan(40);
       expect(p.features.length).toBeGreaterThan(0);
       expect(p.platforms).toContain("Web");
-      expect(p.pricing).toBe("unconfirmed");
+      expect(p.pricing).toBe(p.slug === "resume" ? "free" : "unconfirmed");
     }
   });
   it("never publishes internal entries or private workspace records", () => {

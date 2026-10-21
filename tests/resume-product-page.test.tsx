@@ -12,9 +12,9 @@ describe("CareerForge product information", () => {
     expect(screen.getByRole("link", { name: "Create my résumé" })).toHaveAttribute("href", "https://resume.docheng.co.za/builder/?new=1");
     const table = screen.getByRole("table", { name: "Cloud-backup plans — preview, coming soon" });
     const plus = within(table).getByRole("row", { name: /^Plus/ });
-    expect(plus).toHaveTextContent("R19 R190 $1.49 $14.90 10");
+    expect(within(plus).getAllByRole("cell").map((cell) => cell.textContent)).toEqual(["R19", "R190", "$1.49", "$14.90", "10"]);
     const pro = within(table).getByRole("row", { name: /^Pro/ });
-    expect(pro).toHaveTextContent("R39 R390 $2.99 $29.90 50");
+    expect(within(pro).getAllByRole("cell").map((cell) => cell.textContent)).toEqual(["R39", "R390", "$2.99", "$29.90", "50"]);
     expect(container).not.toHaveTextContent(/R399|R79|Career Plus/);
     const schema = JSON.parse(container.querySelector('script[type="application/ld+json"]')!.textContent!);
     expect(schema.offers).toMatchObject({ price: "0", priceCurrency: "ZAR" });
