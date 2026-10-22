@@ -69,24 +69,29 @@ export const selectedProducts: CatalogueProduct[] = [
     name: "Apologia Sancta",
     category: "Sister Projects",
     summary:
-      "Independent Catholic formation, learning and source-led research.",
+      "Explore Catholic questions, source-linked arguments and a 3D knowledge graph. Browse the library, switch between 2D and 3D views, and discover room-based trivia in the public beta.",
     description:
-      "Apologia Sancta brings learning, quiz experiences, research and knowledge exploration together under its own identity. Its public landing page was checked on 18 October 2026. Hostinger's latest attempted UI build had failed while a previous public application remained accessible; full production workflow acceptance is therefore pending.",
+      "Apologia Sancta brings Catholic learning, apologetics research and trivia together. Its separate Apologia Graph workspace connects claims, objections, responses and source references, with an interactive 3D Galaxy and a 2D view. The current bundled library contains 22 topics, 265 questions and 494 cited references. The public beta exposes the available catalogues while clearly identifying editorial review states and service-dependent learning, research and live-quiz features.",
     audience: "Learners, educators and Catholic research communities",
     features: [
-      "Catholic formation and learning experiences",
-      "Quiz and research entry points",
-      "A separately published Android package",
+      "Interactive 3D Galaxy with orbit, pan, zoom and a 2D graph view",
+      "Source-linked arguments, Catholic responses and historical timelines",
+      "Searchable library of 22 topics and 265 bundled questions",
+      "Room-based Catholic trivia and live-quiz interface",
+      "Research entry points for Timeline, Compare, Debate and saved journeys",
+      "Installable web experience and published Android preview",
     ],
     platforms: ["Web", "Android"],
     status: "beta",
+    pricingNote: "The public library and graph can be opened without checkout. Paid plan prices are not published. Live trivia requires an active room and connection; learning and advanced research depend on service availability.",
+    releaseNotes: "Public library, trivia room selection, research hub and graph checked on 22 October 2026, including rendered 3D and 2D views. The graph uses compatibility mode; Knowledge Engine and solo practice were unavailable. Android 1.0.3 remains the current published preview.",
     icon: "apologia-sancta",
     support: "/support?product=apologia-sancta#contact-form",
     launch: {
       url: "https://sandybrown-bear-488955.hostingersite.com/",
-      checkedAt: "2026-10-18",
+      checkedAt: "2026-10-22",
       scope:
-        "Public landing page; production workflows and latest failed build require separate verification.",
+        "Public catalogue, trivia room selection and research hub. The linked graph renders in 3D and 2D compatibility mode; learning and advanced research remain service dependent.",
     },
     releases: [
       {

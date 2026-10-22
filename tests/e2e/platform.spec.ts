@@ -22,6 +22,7 @@ test("public routes, catalogue filters and responsive layout", async ({
     "/products/desk",
     "/products/resume",
     "/products/paperplane",
+    "/products/apologia-sancta",
     "/downloads",
     "/pricing",
     "/support",
@@ -52,7 +53,15 @@ test("public routes, catalogue filters and responsive layout", async ({
       await page.getByRole("button", { name: "Next screenshot", exact: true }).click();
       await expect(page.getByRole("img", { name: /Organize a fictional three-page/ })).toBeVisible();
     }
-    if (["/", "/apps", "/products/desk", "/products/resume", "/products/paperplane"].includes(path)) {
+    if (path === "/products/apologia-sancta") {
+      await expect(page.getByRole("heading", { name: "Apologia Sancta", exact: true })).toBeVisible();
+      await expect(page.getByRole("link", { name: "Explore the 3D Galaxy →", exact: true })).toHaveAttribute("href", "https://mediumvioletred-kingfisher-797460.hostingersite.com/graph");
+      await expect(page.getByRole("link", { name: "Open live trivia →", exact: true })).toHaveAttribute("href", "https://sandybrown-bear-488955.hostingersite.com/mobile/");
+      await page.getByRole("button", { name: "Next screenshot", exact: true }).click();
+      await expect(page.getByRole("img", { name: /The same curated argument map in 2D/ })).toBeVisible();
+      await expect(page.locator("#apologia-access")).toContainText("No paid plan prices or subscription checkout");
+    }
+    if (["/", "/apps", "/products/desk", "/products/resume", "/products/paperplane", "/products/apologia-sancta"].includes(path)) {
       await page.evaluate(() => window.scrollTo(0, 0));
       await page.screenshot({path: test.info().outputPath((path === "/" ? "home" : path.slice(1).replaceAll("/", "-")) + ".png"), fullPage: path.startsWith("/products/") && path !== "/products/desk"});
     }
