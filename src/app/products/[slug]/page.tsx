@@ -6,6 +6,7 @@ import { ProductIcon } from "@/components/apps/product-icon";
 import { ScreenshotGallery } from "@/components/apps/screenshot-gallery";
 import { Section } from "@/components/ui/section";
 import { Card } from "@/components/ui/card";
+import { ResumeProductPage } from "@/components/apps/resume-product-page";
 export const dynamic = "force-dynamic";
 type Props = { params: Promise<{ slug: string }> };
 export async function generateMetadata({ params }: Props) {
@@ -13,11 +14,11 @@ export async function generateMetadata({ params }: Props) {
   const product = publishedCatalogue().find((p) => p.slug === slug);
   return product
     ? {
-        title: product.name,
+        title: slug === "resume" ? "CareerForge — DoCHEng Resume" : product.name,
         description: product.summary,
         alternates: { canonical: "/products/" + slug },
         openGraph: {
-          title: product.name,
+          title: slug === "resume" ? "CareerForge — DoCHEng Resume" : product.name,
           description: product.summary,
           url: "/products/" + slug,
         },
@@ -29,6 +30,7 @@ export default async function Product({ params }: Props) {
   const catalogue = publishedCatalogue();
   const product = catalogue.find((p) => p.slug === slug);
   if (!product) notFound();
+  if (slug === "resume") return <ResumeProductPage product={product} />;
   const action = productAction(product);
   const schema = {
     "@context": "https://schema.org",

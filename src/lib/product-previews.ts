@@ -13,9 +13,29 @@ export const productPreviews: Record<
   ],
   resume: [
     {
-      url: "/screenshots/resume.png",
+      url: "/screenshots/resume-builder.png",
       caption:
-        "Public Resume Scanner interface. Document analysis, exports and the site's marketing claims have not completed acceptance review.",
+        "CareerForge résumé builder: editable sections and a live A4 preview. Fictional example details.",
+    },
+    {
+      url: "/screenshots/resume-templates.png",
+      caption: "Choose from eight résumé layouts, with category filters and previews. The gallery uses fictional sample documents.",
+    },
+    {
+      url: "/screenshots/resume-cover-letter.png",
+      caption: "CareerForge cover-letter editor with guided writing steps and a live document preview. Fictional example details.",
+    },
+    {
+      url: "/screenshots/resume-workspace.png",
+      caption: "The browser workspace brings documents, applications and career tools together on this device.",
+    },
+    {
+      url: "/screenshots/resume-checker.png",
+      caption: "The current résumé checker accepts PDF and DOCX documents, with Basic, ATS and Expert feedback options.",
+    },
+    {
+      url: "/screenshots/resume-career-plan.png",
+      caption: "Create a 90-day career plan with editable goals, tasks and milestones, saved in this browser.",
     },
   ],
   "apologia-sancta": [

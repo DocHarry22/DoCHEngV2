@@ -20,6 +20,7 @@ test("public routes, catalogue filters and responsive layout", async ({
     "/",
     "/apps",
     "/products/desk",
+    "/products/resume",
     "/downloads",
     "/pricing",
     "/support",
@@ -37,8 +38,14 @@ test("public routes, catalogue filters and responsive layout", async ({
         () => document.documentElement.scrollWidth <= innerWidth,
       ),
     ).toBe(true);
-    if (["/", "/apps", "/products/desk"].includes(path)) {
-      await page.screenshot({path: test.info().outputPath((path === "/" ? "home" : path.slice(1).replaceAll("/", "-")) + ".png")});
+    if (path === "/products/resume") {
+      await expect(page.getByRole("heading", { name: "CareerForge", exact: true })).toBeVisible();
+      await expect(page.getByRole("table", { name: "Cloud-backup plans — preview, coming soon" })).toContainText("R190");
+      await page.getByRole("button", { name: "Next screenshot", exact: true }).click();
+      await expect(page.getByRole("img", { name: /Choose from eight résumé layouts/ })).toBeVisible();
+    }
+    if (["/", "/apps", "/products/desk", "/products/resume"].includes(path)) {
+      await page.screenshot({path: test.info().outputPath((path === "/" ? "home" : path.slice(1).replaceAll("/", "-")) + ".png"), fullPage: path === "/products/resume"});
     }
   }
   await page.goto("/apps");

@@ -63,13 +63,13 @@ const pricingDetailBySlug: Record<
   },
   resume: {
     bestFor:
-      "Career-focused technical professionals preparing high-stakes applications.",
+      "Job seekers, graduates, professionals and career changers preparing their next application.",
     planNote:
-      "A proposed one-time tier and optional monthly tier await product and billing approval.",
+      "CareerForge browser tools are free. Plus R19 / 30 days or R190 / 365 days and Pro R39 / 30 days or R390 / 365 days preview optional cloud backups. Checkout is not live; passes would not renew automatically.",
     notableFeatures: [
-      "Technical resume parsing and score visibility",
-      "Role-fit optimization for engineering hiring",
-      "Export-ready profile package",
+      "Eight résumé layouts, six cover-letter designs and document downloads",
+      "Résumé checks, job tracking, tailoring and version history",
+      "Career plans, salary scenarios and interview practice",
     ],
   },
   compass: {
