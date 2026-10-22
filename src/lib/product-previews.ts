@@ -47,11 +47,13 @@ export const productPreviews: Record<
     },
   ],
   "apologia-sancta": [
-    {
-      url: "/screenshots/apologia-sancta.png",
-      caption:
-        "Apologia Sancta public formation and quiz entry page. Published learning content and live-room readiness depend on the independent service.",
-    },
+    { url: "/screenshots/apologia-galaxy-3d.png", caption: "The live 3D Galaxy with orbit and zoom controls, selected-node details and source context. Compatibility mode and prototype connection weights are shown." },
+    { url: "/screenshots/apologia-galaxy-2d.png", caption: "The same curated argument map in 2D, with typed connections, visible-node navigation and editorial status." },
+    { url: "/screenshots/apologia-graph.png", caption: "Apologia Graph’s research record with a source dossier, historical timeline and explicit editorial review state." },
+    { url: "/screenshots/apologia-library.png", caption: "The public bundled library lists 22 topics, 265 questions and 494 cited references, with search and category filters." },
+    { url: "/screenshots/apologia-trivia-questions.png", caption: "A real Christology question collection with multiple-choice options expanded. Library browsing does not reveal the correct answer or award a score." },
+    { url: "/screenshots/apologia-trivia-live.png", caption: "The live-trivia room selector. Players choose an available host room before joining; no room was joined or score created for this screenshot." },
+    { url: "/screenshots/apologia-research.png", caption: "The current research hub links to the Galaxy, Timeline, Compare and Debate, and reports the Knowledge Engine’s unavailable state." },
   ],
   "thasi-etoile": [
     {
