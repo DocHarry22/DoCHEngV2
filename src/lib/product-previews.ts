@@ -1,9 +1,17 @@
-// Original screenshots captured from the owner's verified public application pages.
-// These show entry interfaces, not authenticated workflows or acceptance certification.
+// Original application screenshots. Private-preview examples use fictional documents.
+// Captions distinguish public entry pages from preview workflows.
 export const productPreviews: Record<
   string,
   { url: string; caption: string }[]
 > = {
+  paperplane: [
+    { url: "/screenshots/paperplane-editor.png", caption: "Paperplane PDF editor with a fictional project brief, page navigation and editing controls." },
+    { url: "/screenshots/paperplane-organize.png", caption: "Organize a fictional three-page PDF using page previews, reordering, rotation and page controls." },
+    { url: "/screenshots/paperplane-forms.png", caption: "A fictional volunteer form filled locally in Paperplane, with the completed PDF ready to download." },
+    { url: "/screenshots/paperplane-workflows.png", caption: "A saved browser workflow chains compression, a review watermark and page numbers for a fictional document." },
+    { url: "/screenshots/paperplane-tools.png", caption: "Paperplane’s current tool library includes 24 browser tools, category filters and search." },
+    { url: "/screenshots/paperplane-pricing.png", caption: "The private preview’s ZAR plan comparison: Free R0, draft Pro R99 and Business R249 per 30 days. Paid checkout is disabled." },
+  ],
   desk: [
     {
       url: "/screenshots/desk.png",

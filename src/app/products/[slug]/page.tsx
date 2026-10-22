@@ -7,6 +7,7 @@ import { ScreenshotGallery } from "@/components/apps/screenshot-gallery";
 import { Section } from "@/components/ui/section";
 import { Card } from "@/components/ui/card";
 import { ResumeProductPage } from "@/components/apps/resume-product-page";
+import { PaperplaneProductPage } from "@/components/apps/paperplane-product-page";
 export const dynamic = "force-dynamic";
 type Props = { params: Promise<{ slug: string }> };
 export async function generateMetadata({ params }: Props) {
@@ -31,6 +32,7 @@ export default async function Product({ params }: Props) {
   const product = catalogue.find((p) => p.slug === slug);
   if (!product) notFound();
   if (slug === "resume") return <ResumeProductPage product={product} />;
+  if (slug === "paperplane") return <PaperplaneProductPage product={product} />;
   const action = productAction(product);
   const schema = {
     "@context": "https://schema.org",
