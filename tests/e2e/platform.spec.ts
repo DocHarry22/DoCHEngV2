@@ -21,6 +21,7 @@ test("public routes, catalogue filters and responsive layout", async ({
     "/apps",
     "/products/desk",
     "/products/resume",
+    "/products/paperplane",
     "/downloads",
     "/pricing",
     "/support",
@@ -44,8 +45,16 @@ test("public routes, catalogue filters and responsive layout", async ({
       await page.getByRole("button", { name: "Next screenshot", exact: true }).click();
       await expect(page.getByRole("img", { name: /Choose from eight résumé layouts/ })).toBeVisible();
     }
-    if (["/", "/apps", "/products/desk", "/products/resume"].includes(path)) {
-      await page.screenshot({path: test.info().outputPath((path === "/" ? "home" : path.slice(1).replaceAll("/", "-")) + ".png"), fullPage: path === "/products/resume"});
+    if (path === "/products/paperplane") {
+      await expect(page.getByRole("heading", { name: "Paperplane", exact: true })).toBeVisible();
+      await expect(page.getByRole("table", { name: "Paperplane plans — draft prices, checkout coming soon" })).toContainText("R2,490");
+      await expect(page.getByRole("link", { name: "Request early access", exact: true })).toHaveAttribute("href", "/support?product=paperplane#contact-form");
+      await page.getByRole("button", { name: "Next screenshot", exact: true }).click();
+      await expect(page.getByRole("img", { name: /Organize a fictional three-page/ })).toBeVisible();
+    }
+    if (["/", "/apps", "/products/desk", "/products/resume", "/products/paperplane"].includes(path)) {
+      await page.evaluate(() => window.scrollTo(0, 0));
+      await page.screenshot({path: test.info().outputPath((path === "/" ? "home" : path.slice(1).replaceAll("/", "-")) + ".png"), fullPage: path.startsWith("/products/") && path !== "/products/desk"});
     }
   }
   await page.goto("/apps");
