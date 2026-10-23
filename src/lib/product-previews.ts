@@ -66,7 +66,7 @@ export const productPreviews: Record<
     {
       url: "/screenshots/water-nest.png",
       caption:
-        "Water Nest's existing public storefront as observed. Store claims, certifications and transactions require independent validation.",
+        "Water Nest’s public homepage, captured on 18 October 2026. Its current deployed build and storefront content were checked again on 23 October. Marketing claims shown are the store’s statements.",
     },
   ],
 };

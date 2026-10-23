@@ -23,6 +23,7 @@ test("public routes, catalogue filters and responsive layout", async ({
     "/products/resume",
     "/products/paperplane",
     "/products/apologia-sancta",
+    "/products/water-nest",
     "/downloads",
     "/pricing",
     "/support",
@@ -61,7 +62,14 @@ test("public routes, catalogue filters and responsive layout", async ({
       await expect(page.getByRole("img", { name: /The same curated argument map in 2D/ })).toBeVisible();
       await expect(page.locator("#apologia-access")).toContainText("No paid plan prices or subscription checkout");
     }
-    if (["/", "/apps", "/products/desk", "/products/resume", "/products/paperplane", "/products/apologia-sancta"].includes(path)) {
+    if (path === "/products/water-nest") {
+      await expect(page.getByRole("heading", { name: "Water Nest", exact: true })).toBeVisible();
+      await expect(page.getByRole("link", { name: "Shop Water Nest", exact: true })).toHaveAttribute("href", "https://waternest.co.za/shop");
+      await expect(page.getByRole("link", { name: "Request a service →", exact: true })).toHaveAttribute("href", "https://waternest.co.za/services/book");
+      await expect(page.getByRole("table", { name: "Catalogue examples — 23 October 2026" })).toContainText("Out of stock");
+      await expect(page.getByRole("img", { name: /Water Nest’s public homepage, captured on 18 October/ })).toBeVisible();
+    }
+    if (["/", "/apps", "/products/desk", "/products/resume", "/products/paperplane", "/products/apologia-sancta", "/products/water-nest"].includes(path)) {
       await page.evaluate(() => window.scrollTo(0, 0));
       await page.screenshot({path: test.info().outputPath((path === "/" ? "home" : path.slice(1).replaceAll("/", "-")) + ".png"), fullPage: path.startsWith("/products/") && path !== "/products/desk"});
     }

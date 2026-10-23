@@ -9,6 +9,7 @@ import { Card } from "@/components/ui/card";
 import { ResumeProductPage } from "@/components/apps/resume-product-page";
 import { PaperplaneProductPage } from "@/components/apps/paperplane-product-page";
 import { ApologiaProductPage } from "@/components/apps/apologia-product-page";
+import { WaterNestProductPage } from "@/components/apps/water-nest-product-page";
 export const dynamic = "force-dynamic";
 type Props = { params: Promise<{ slug: string }> };
 export async function generateMetadata({ params }: Props) {
@@ -35,6 +36,7 @@ export default async function Product({ params }: Props) {
   if (slug === "resume") return <ResumeProductPage product={product} />;
   if (slug === "paperplane") return <PaperplaneProductPage product={product} />;
   if (slug === "apologia-sancta") return <ApologiaProductPage product={product} />;
+  if (slug === "water-nest") return <WaterNestProductPage product={product} />;
   const action = productAction(product);
   const schema = {
     "@context": "https://schema.org",
